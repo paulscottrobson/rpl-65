@@ -75,7 +75,7 @@ class Tokens(object):
 		return """
 			* /	mod	+ -	and	or xor shl shr
 			= <> > < >= <=
-			c@ c! @ ! d! alloc [ ]
+			c@ c! @ ! d! alloc ^ [ ]
 			abs negate not ++ -- bswap << >> sgn rnd
 			clr drop dup nip over swap
 			else index ; assert

@@ -64,7 +64,7 @@ randomSeed:		.word ? 					; random number seed
 
 		* = MemoryStart
 
-FastVariables:	.fill 	26*2 				; fast variable memory.
+FastVariables:	.fill 	64 					; fast variable memory.
 
 VariableHashTable:.fill	HashTableSize * 2 	; hash tables (variables)
 

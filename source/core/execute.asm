@@ -16,6 +16,8 @@
 ; ******************************************************************************
 
 ExecuteProgram:
+		set16 	FastVariables+2,$ABCD
+
 		jsr 	StackReset 					; reset the CPU stack.
 		jsr 	ResetMemory 				; reset alloc pointers, variables etc.
 		ldx 	#$FF 						; empty the data stack
@@ -33,7 +35,6 @@ ShortConstant:
 		;		Main execution loop
 		;
 ExecuteLoop:
-		.byte 	$FF
 		lda 	(codePtr),y 				; get next character
 		bmi 	_ELNotToken
 		iny 								; skip the token
@@ -47,7 +48,72 @@ _ELNotToken:
 		;
 		;		Handle variable.
 		;
+		cmp 	#$E0 						; is it E0-FF - i.e. it is one letter variable.
+		bcc 	_ELNotFastVariable
+		iny 								; get the next token.
+		lda 	(codePtr),y
+		dey
+		cmp 	#KWD_LSQPAREN 				; if not [ then it is a simple variable
+		beq 	_ELNotFastVariable 			; which we can optimise.
+		;
+		phy 								; save Y
+		lda 	(codePtr),y 				; variable E0-FF
+		asl 	a 							; it is now C0-FE, steps of 2.
+		tay 								; access via Y
+		inx 								; make space on the stack.
+		lda 	FastVariables-$C0,y 		; copy the fast variable
+		sta 	lowStack,x
+		lda 	FastVariables-$C0+1,y
+		sta 	highStack,x
+		ply 								; restore code pointer
+		iny 								; skip variable.
+		bra 	ExecuteLoop
+		;
+		;		It is either a single variable indexed, or a long variable name
+		;		which may or may not be indexed.
+		;
+_ELNotFastVariable:		
 		.byte 	$FF
+
+; ******************************************************************************
+;
+;								Long Constant
+;
+; ******************************************************************************
+
+LongConstant:		;; [%const]
+		StartCommand
+		inx 								; space for constant
+		lda 	(codePtr),y 				; copy it in.
+		sta 	lowStack,x
+		iny
+		lda 	(codePtr),y
+		sta 	highStack,x
+		iny
+		NextCommand
+
+; ******************************************************************************
+;
+;					String. Strings are Length Prefixed
+;
+; ******************************************************************************
+
+StringConstant:	 ;; [%qstring]
+		StartCommand
+		inx
+		clc 								; copy Y + codePtr in.
+		tya
+		adc 	codePtr 					
+		sta 	lowStack,x
+		lda 	codePtr+1
+		adc 	#0
+		sta 	highStack,x
+		;
+		tya 								; add 1 + length to Y
+		sec
+		adc 	(codePtr),y
+		tay
+		NextCommand
 
 ; ******************************************************************************
 ;
@@ -57,7 +123,6 @@ _ELNotToken:
 
 ExecuteNextLine:	;; [%eol]
 ExecuteComment:		;; [%comment]
-
 		StartCommand
 		clc 								; skip forward
 		lda 	(codePtr)

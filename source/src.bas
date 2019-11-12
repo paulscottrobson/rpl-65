@@ -1,10 +1,6 @@
 //
 //		Test.
 //
-42 	11 	
-+
+"COUNT" 442 	11 	
+BC.D +
 
-// TODO: Long constants
-//		 Strings
-//		 Comments
-//		 Defines
