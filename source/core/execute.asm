@@ -55,6 +55,7 @@ _ELNotToken:
 		dey
 		cmp 	#KWD_LSQPAREN 				; if not [ then it is a simple variable
 		beq 	_ELNotFastVariable 			; which we can optimise.
+		bra 	_ELNotFastVariable ; FUDGE.
 		;
 		phy 								; save Y
 		lda 	(codePtr),y 				; variable E0-FF
@@ -73,6 +74,9 @@ _ELNotToken:
 		;		which may or may not be indexed.
 		;
 _ELNotFastVariable:		
+		clc									; do not autocreate if not found.
+		sec ; FUDGE !!!
+		jsr 	VariableFind				; find the variable.
 		.byte 	$FF
 
 ; ******************************************************************************

@@ -40,8 +40,8 @@ class BasicProgram(object):
 	def addLine(self,line):
 		lineCode = self.translator.translateLine(line)
 		self.code.append(len(lineCode)+3+1)									# 3 for header, 1 for $00
-		self.code.append(self.nextLine >> 8)								# line number MSB
 		self.code.append(self.nextLine & 0xFF)								# line number LSB
+		self.code.append(self.nextLine >> 8)								# line number MSB
 		self.nextLine += self.lineStep
 		for w in lineCode:													# output tokenised code
 			self.code.append(w)

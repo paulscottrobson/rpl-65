@@ -38,6 +38,7 @@ Command_End:
 		.include "core/stack.asm"
 		.include "core/tointeger.asm"
 		.include "core/tostring.asm"
+		.include "core/variables.asm"
 		
 		.include "words/memory.asm"
 		.include "words/stack.asm"
