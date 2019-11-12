@@ -4,7 +4,7 @@
 #		Name:		makeprogram.py
 #		Purpose:	Program Converter
 #		Author:		Paul Robson (paul@robsons.org.uk)
-#		Created:	8th November 2019
+#		Created:	12th November 2019
 #
 # ****************************************************************************
 # ****************************************************************************
@@ -39,13 +39,12 @@ class BasicProgram(object):
 	#
 	def addLine(self,line):
 		lineCode = self.translator.translateLine(line)
-		self.code.append(len(lineCode)*2+3+2)								# 3 for header, 2 for $0000
+		self.code.append(len(lineCode)+3+1)									# 3 for header, 1 for $00
 		self.code.append(self.nextLine >> 8)								# line number MSB
 		self.code.append(self.nextLine & 0xFF)								# line number LSB
 		self.nextLine += self.lineStep
 		for w in lineCode:													# output tokenised code
-			self.code.append(w >> 8)
-			self.code.append(w & 0xFF)
+			self.code.append(w)
 		self.code.append(0)													# EOL Marker
 		self.code.append(0)
 	#

@@ -4,7 +4,7 @@
 #		Name:		generate.py
 #		Purpose:	Creates tables, constants
 #		Author:		Paul Robson (paul@robsons.org.uk)
-#		Created:	8th November 2019
+#		Created:	12th November 2019
 #
 # ****************************************************************************
 # ****************************************************************************
@@ -18,58 +18,54 @@ base = tok.getBaseToken()
 #
 #		Constants
 #
-print("{0:30} = ${1:x}".format("TOKEN_BASE",tok.getBaseToken()))
-print("{0:30} = ${1:x}".format("TOKEN_FIRSTCMD",tok.getFirstCommandToken()))
-print("{0:30} = ${1:x}".format("TOKEN_BASEIDENTIFIER",tok.getBaseIdentifierToken()))
+const = tok.getConstants()
+toSkip = const["TOK_FIRST"]-const["TOK_BASE"]
+for k in const.keys():
+	print("{0} = ${1:02x}".format(k,const[k]))
 print("")
 #
 for i in range(0,len(tokList)):
-	s = "KWD_"+tok.tokenToText(tokList[i])
-	print("{0:30} = ${1:04x} ; {2}".format(s,i+base,tokList[i].lower()))
+	if i >= toSkip:
+		s = "KWD_"+tok.tokenToText(tokList[i])
+		print("{0:30} = ${1:04x} ; {2}".format(s,i+base,tokList[i].lower()))
 print("")
 #
 #		Keyword text tables - length followed by token text.
 #
 print("KeywordText:")
 for i in range(0,len(tokList)):
-	b = [ord(x) for x in tokList[i].upper()]
-	b[-1] |= 0x80
-	b.insert(0,len(b))
-	b = ",".join(["${0:02x}".format(c) for c in b])
-	print('\t.text {0:32} ; ${1:04x} {2}'.format(b,i+base,tokList[i].lower()))
+	if i >= toSkip:
+		b = [ord(x) for x in tokList[i].upper()]
+		b[-1] |= 0x80
+		b.insert(0,len(b))
+		b = ",".join(["${0:02x}".format(c) for c in b])
+		print('\t.text {0:32} ; ${1:04x} {2}'.format(b,i+base,tokList[i].lower()))
 print("\t.byte 0\n")
 #
 #		Scan for expression and command handlers
 #
 xHandler = {}
-cHandler = {}
 for root,dirs,files in os.walk("."):
 	for f in [x for x in files if x.endswith(".asm")]:
 		for l in open(root+os.sep+f):
 			if l.find(";;") >= 0:	
 				m = re.match("^(.*?)\\:\\s*\\;\\;\\s*(\\[)(.*?)\\]\\s*$",l)
-				if m is None:
-					m = re.match("^(.*?)\\:\\s*\\;\\;\\s*(\\<)(.*?)\\>\\s*$",l)
 				assert m is not None,"Bad marker line "+l
-				chash = xHandler if m.group(2) == "[" else cHandler
 				key = m.group(3).upper().strip()
-				assert key not in chash,"Duplicate key "+key 
-				chash[key] = m.group(1).strip()
-#
-#		Expressions
-#
-print("ExpressionHandler:")
-for i in range(0,tok.getFirstCommandToken()-base):
-	t = tokList[i]
-	routine = "ExitExpression" if t not in xHandler else xHandler[t]
-	print("\t.word {0:24} ; ${1:04x} {2}".format(routine,i+base,t.lower()))
-print("")
+				assert key not in xHandler,"Duplicate key "+key 
+				xHandler[key] = m.group(1).strip()
 #
 #		Commands
 #
-print("CommandHandler:")
+print("DispatchHandler:")
 for i in range(0,len(tokList)):
 	t = tokList[i]
-	routine = "SyntaxError" if t not in cHandler else cHandler[t]
+	if t in xHandler:
+		routine = xHandler[t]
+	elif i < toSkip and i % 27 != 26:
+		routine = "LongReadHandler" if i < 26 else "ShortReadHandler"
+	else:
+		routine = "SyntaxError" 
+
 	print("\t.word {0:24} ; ${1:04x} {2}".format(routine,i+base,t.lower()))
 print("")

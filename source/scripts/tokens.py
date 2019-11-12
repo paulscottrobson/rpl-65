@@ -24,17 +24,20 @@ class Tokens(object):
 	def __init__(self):
 		if Tokens.tokenList is None:										# create token list
 			Tokens.tokenList = []											# 2 sets of variable tokens
-			Tokens.constants = { "TOK_QSTRING":1,"TOK_COMMENT":2,"TOK_DEF":3 }
+			Tokens.constants = { "TOK_QSTRING":1,"TOK_COMMENT":2,"TOK_DEFINE":3,
+								 "TOK_LARGE_CONSTANT":4,"TOK_CALL":5 }
 			self.currentToken = 0x10
-			self.mark("TOK_CONST")
+			self.mark("TOK_SMALL_CONSTANT")
 			self.currentToken = self.getBaseToken()
+			self.mark("TOK_BASE")
 			self.mark("TOK_VAR_BODY")
 			for v in range(0,27):
 				self.addTokens(chr(v+65) if v < 26 else ".")
-			self.mark("TOK_VAR_TAIL")
+			self.mark("TOK_VAR_ENDIDENT")
 			for v in range(0,27):
 				self.addTokens(chr(v+65) if v < 26 else ".")
 
+			self.mark("TOK_FIRST")
 			self.mark("TOK_STRUCT_INC")
 			self.addTokens("if repeat for")
 			self.mark("TOK_STRUCT_DEC")
@@ -77,7 +80,7 @@ class Tokens(object):
 		t = t.replace("!","PLING").replace("?","QMARK").replace("[","LSQPAREN").replace("]","RSQPAREN")
 		t = t.replace("$","DOLLAR").replace(",","COMMA").replace(":","COLON").replace("%","PERCENT")
 		t = t.replace("(","LPAREN").replace(")","RPAREN").replace("&","AMPERSAND").replace("^","HAT")
-		t = t.replace(".","DOT").replace("@","AT")
+		t = t.replace(".","DOT").replace("@","AT").replace(";","SEMICOLON")
 		#t = t.replace("","").replace("","").replace("","").replace("","").replace("","")
 		assert re.match("^[A-Z\\_]+$",t) is not None,"Bad token "+t
 		return t
@@ -88,11 +91,11 @@ class Tokens(object):
 		return """
 			* /	mod	+ -	and	or xor shl shr
 			= <> > < >= <=
-			c@ c! @ ! d! alloc 
+			c@ c! @ ! d! alloc [ ]
 			abs negate not ++ -- bswap << >> sgn rnd
 			clr drop dup nip over swap
-			else index
-			list new old stop run end renumber save load
+			else index ; assert
+			list new old stop run end save load
 		"""
 
 Tokens.tokenList = None

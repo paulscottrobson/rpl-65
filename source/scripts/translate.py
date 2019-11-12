@@ -4,7 +4,7 @@
 #		Name:		translate.py
 #		Purpose:	Program/Line translator.
 #		Author:		Paul Robson (paul@robsons.org.uk)
-#		Created:	8th November 2019
+#		Created:	12th November 2019
 #
 # ****************************************************************************
 # ****************************************************************************
@@ -26,8 +26,9 @@ class Translator(object):
 		self.tokens = Tokens()												# create token info
 		self.tokenList = self.tokens.getTokens() 							# get the list.
 		self.longest = max([len(x) for x in self.tokenList])				# Longest tokens.
+		self.const = self.tokens.getConstants()
 		self.tokenLookup = {}												# convert to hash
-		for i in range(0,len(self.tokenList)):
+		for i in range(27,len(self.tokenList)):
 			assert self.tokenList[i] not in self.tokenLookup,"Token "+self.tokenList[i]+" dup	"
 			self.tokenLookup[self.tokenList[i]] = i + self.tokens.getBaseToken()
 	#
@@ -49,77 +50,81 @@ class Translator(object):
 		if m is not None:
 			self.appendConstant(int(m.group(1)))
 			return m.group(2)
-		m = re.match("^\\&([0-9A-Fa-f]+)(.*)",s)	
+		m = re.match("^\\$([0-9A-Fa-f]+)(.*)",s)	
 		if m is not None:
 			self.appendConstant(int(m.group(1),16))
 			return m.group(2)
 		#
-		#		Check comment and string
+		#		Check comment,define and string
 		#
 		m = re.match('^\\"(.*?)\\"(.*)$',s)
 		if m is not None:
-			self.appendString(0x0100,m.group(1))
+			self.appendString(self.const["TOK_QSTRING"],m.group(1))
 			return m.group(2)
 		if s.startswith("'"):
-			self.appendString(0x0200,s[1:].strip())
+			self.appendString(self.const["TOK_COMMENT"],s[1:].strip())
 			return ""
+		m = re.match("^\\:([A-Za-z\\.]+)(.*)",s)
+		if m is not None:
+			self.code.append(self.const["TOK_DEFINE"])
+			self.code.append(len(m.group(1)))
+			self.code += self.convertIdentifier(m.group(1))
+			return m.group(2)
 		#
 		#		Check for tokens
 		#
 		for sz in range(self.longest,0,-1):
-			if s[:sz].upper() in self.tokenLookup:
-				self.code.append(self.tokenLookup[s[:sz].upper()])
+			w = s[:sz].upper()
+			if w in self.tokenLookup and re.match("^[A-Z]$",w) is None:
+				self.code.append(self.tokenLookup[w])
 				return s[sz:]
 		#
 		#		Finally identifiers
 		#
 		m = re.match("^([A-Za-z\\.]+)(.*)$",s)
 		if m is not None:
-			ident = m.group(1)[:3]
-			self.code.append(self.convertIdentifier(ident))
-			return s[len(ident):]
+			self.code += self.convertIdentifier(m.group(1))
+			return m.group(2).strip()
 
 		assert False,"Can't process '"+s+"'"
 	#
 	#		Append a single constant
 	#
 	def appendConstant(self,n):
-		n = n & 0xFFFF 														# into range
-		if (n & 0x8000) != 0:												# in range 8000-FFFF
-			self.code.append(self.tokenLookup["HCONST"])					# that marker
-		self.code.append(n | 0x8000)										# force into 8000-FFFF
+		if n < 63:
+			self.code.append(self.const["TOK_SMALL_CONSTANT"]+n)
+		else:
+			self.code.append(self.const["TOK_LARGE_CONSTANT"])
+			n = n & 0xFFFF
+			self.code.append(n & 0xFF)
+			self.code.append(n >> 8)
 	#
 	#		Append a string.
 	#
-	def appendString(self,base,s):
-		s = s.upper() + chr(0)												# Make ASCIIZ
-		if len(s) % 2 != 0:													# if even add $FF
-			s = s + chr(0xFF)												# so there is no $0000 word.
-		self.code.append(base+len(s)+2)										# base + total length in bytes
-		for i in range(0,len(s),2):			
-			self.code.append(ord(s[i])*0x100+ord(s[i+1]))					
+	def appendString(self,base,s):		
+		self.code.append(base)												# base + total length in bytes
+		self.code.append(len(s))		
+		self.code += [ord(x) for x in s.upper()]
 	#
 	#		Convert an identifier to a token
 	#
 	def convertIdentifier(self,ident):
 		ident = ident.upper()
-		assert len(ident) <= 3 and ident != "" and re.match("^[A-Z\\.]+$",ident) is not None
-		mult = 1
-		result = 0
-		for c in ident:
-			result = result + mult * ((ord(c)-ord('@')) if c != "." else 27)
-			mult *= 28
-		return result+self.tokens.getBaseIdentifierToken()
+		ident = [ord(x)-ord('A')+self.const["TOK_BASE"] for x in ident]
+		ident[-1] += 27
+		return ident
 	#
 	#		Translator test.
 	#
 	def test(self,txt):
 		print(" --- "+txt+" ---")
-		print("\t["+",".join(["${0:04x}".format(n) for n in self.translateLine(txt)])+"]")
+		print("\t["+",".join(["${0:02x}".format(n) for n in self.translateLine(txt)])+"]")
 		
 if __name__ == "__main__":
 	t = Translator()
-	t.test("42 43 &2A7 'comment")
+	t.test("42 43 $2A7 'comment")
 	t.test('"qstring" "" "abcd"')
-	t.test("+ and[] <= = ==")
-	t.test("a z aa and ana xa.bcde.xx z..")
+	t.test("+ and [ ] <= = ==")
+	t.test("a z aacd and ana xa.bcde.xx z..")
+	t.test(":hello.world 42 ;")
+	t.test("hello.world")

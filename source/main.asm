@@ -16,21 +16,24 @@
 		jmp 	Start
 
 		* = ProgramStart
-		;.include "generated/program.inc"
+		.include "generated/program.inc"
 
 		* = BuildAddress
 Start:
 		ldx 	#$FF 						; reset the stack.
 		txs
 		jsr 	ExternInitialise		
+		jmp 	ExecuteProgram
 
-ExpressionLoop:
 WarmStart:
 		.byte 	$FF
 		ldx 	#$55
+		.include "generated/rpl.inc"
 
 		.include "core/error.asm"
+		.include "core/execute.asm"
 		.include "core/extern.asm"
+		.include "core/reset.asm"
 		.include "core/stack.asm"
 		.include "core/tointeger.asm"
 		.include "core/tostring.asm"
