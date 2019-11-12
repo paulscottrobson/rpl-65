@@ -28,9 +28,9 @@ class Translator(object):
 		self.longest = max([len(x) for x in self.tokenList])				# Longest tokens.
 		self.const = self.tokens.getConstants()
 		self.tokenLookup = {}												# convert to hash
-		for i in range(27,len(self.tokenList)):
+		for i in range(0,len(self.tokenList)):
 			assert self.tokenList[i] not in self.tokenLookup,"Token "+self.tokenList[i]+" dup	"
-			self.tokenLookup[self.tokenList[i]] = i + self.tokens.getBaseToken()
+			self.tokenLookup[self.tokenList[i]] = i
 	#
 	#		Translate a single line.
 	#
@@ -59,14 +59,14 @@ class Translator(object):
 		#
 		m = re.match('^\\"(.*?)\\"(.*)$',s)
 		if m is not None:
-			self.appendString(self.const["TOK_QSTRING"],m.group(1))
+			self.appendString(self.tokenLookup["%QSTRING"],m.group(1))
 			return m.group(2)
 		if s.startswith("'"):
-			self.appendString(self.const["TOK_COMMENT"],s[1:].strip())
+			self.appendString(self.tokenLookup["%COMMENT"],s[1:].strip())
 			return ""
 		m = re.match("^\\:([A-Za-z\\.]+)(.*)",s)
 		if m is not None:
-			self.code.append(self.const["TOK_DEFINE"])
+			self.code.append(self.tokenLookup["%DEFINE"])
 			self.code.append(len(m.group(1)))
 			self.code += self.convertIdentifier(m.group(1))
 			return m.group(2)
@@ -92,9 +92,9 @@ class Translator(object):
 	#
 	def appendConstant(self,n):
 		if n < 63:
-			self.code.append(self.const["TOK_SMALL_CONSTANT"]+n)
+			self.code.append(0x80+n)
 		else:
-			self.code.append(self.const["TOK_LARGE_CONSTANT"])
+			self.code.append(self.tokenLookup["%CONST"])
 			n = n & 0xFFFF
 			self.code.append(n & 0xFF)
 			self.code.append(n >> 8)
@@ -109,9 +109,9 @@ class Translator(object):
 	#		Convert an identifier to a token
 	#
 	def convertIdentifier(self,ident):
-		ident = ident.upper()
-		ident = [ord(x)-ord('A')+self.const["TOK_BASE"] for x in ident]
-		ident[-1] += 27
+		ident = ident.upper().replace(".",chr(ord('Z')+1))
+		ident = [ord(x)-ord('A')+0xC0 for x in ident]
+		ident[-1] += 0x20
 		return ident
 	#
 	#		Translator test.

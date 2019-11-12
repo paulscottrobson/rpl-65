@@ -46,7 +46,6 @@ class BasicProgram(object):
 		for w in lineCode:													# output tokenised code
 			self.code.append(w)
 		self.code.append(0)													# EOL Marker
-		self.code.append(0)
 	#
 	#		Complete
 	#

@@ -1,4 +1,10 @@
 //
 //		Test.
 //
-42 	3	+
+42 	11 	
++
+
+// TODO: Long constants
+//		 Strings
+//		 Comments
+//		 Defines

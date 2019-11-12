@@ -23,21 +23,10 @@ class Tokens(object):
 	#
 	def __init__(self):
 		if Tokens.tokenList is None:										# create token list
-			Tokens.tokenList = []											# 2 sets of variable tokens
-			Tokens.constants = { "TOK_QSTRING":1,"TOK_COMMENT":2,"TOK_DEFINE":3,
-								 "TOK_LARGE_CONSTANT":4,"TOK_CALL":5 }
-			self.currentToken = 0x10
-			self.mark("TOK_SMALL_CONSTANT")
-			self.currentToken = self.getBaseToken()
-			self.mark("TOK_BASE")
-			self.mark("TOK_VAR_BODY")
-			for v in range(0,27):
-				self.addTokens(chr(v+65) if v < 26 else ".")
-			self.mark("TOK_VAR_ENDIDENT")
-			for v in range(0,27):
-				self.addTokens(chr(v+65) if v < 26 else ".")
-
-			self.mark("TOK_FIRST")
+			Tokens.tokenList = []											
+			Tokens.constants = {}
+			self.currentToken = 0
+			self.addTokens("%eol %const %call %comment %qstring %define")
 			self.mark("TOK_STRUCT_INC")
 			self.addTokens("if repeat for")
 			self.mark("TOK_STRUCT_DEC")
@@ -57,11 +46,6 @@ class Tokens(object):
 	def mark(self,name):
 		Tokens.constants[name.strip().upper()] = self.currentToken
 	#
-	#		Get the base token number
-	#
-	def getBaseToken(self):
-		return 0x50
-	#
 	#		Get the token list
 	#
 	def getTokens(self):
@@ -78,7 +62,7 @@ class Tokens(object):
 		t = t.replace("+","PLUS").replace("-","MINUS").replace("*","STAR").replace("/","SLASH")
 		t = t.replace("<","LESS").replace("=","EQUAL").replace(">","GREATER").replace("|","BAR")
 		t = t.replace("!","PLING").replace("?","QMARK").replace("[","LSQPAREN").replace("]","RSQPAREN")
-		t = t.replace("$","DOLLAR").replace(",","COMMA").replace(":","COLON").replace("%","PERCENT")
+		t = t.replace("$","DOLLAR").replace(",","COMMA").replace(":","COLON").replace("%","SYS_")
 		t = t.replace("(","LPAREN").replace(")","RPAREN").replace("&","AMPERSAND").replace("^","HAT")
 		t = t.replace(".","DOT").replace("@","AT").replace(";","SEMICOLON")
 		#t = t.replace("","").replace("","").replace("","").replace("","").replace("","")
@@ -104,7 +88,7 @@ if __name__ == "__main__":
 		t = Tokens()
 		tk = t.getTokens()
 		for i in range(0,len(tk)):
-			print("${0:02x} {1:12} {2}".format(i+t.getBaseToken(),tk[i],t.tokenToText(tk[i])))
+			print("${0:02x} {1:12} {2}".format(i,tk[i],t.tokenToText(tk[i])))
 		print(t.getTokens())
 		print(t.getConstants())
-			
+				

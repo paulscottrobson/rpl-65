@@ -26,6 +26,7 @@ Start:
 		jmp 	ExecuteProgram
 
 WarmStart:
+Command_End:
 		.byte 	$FF
 		ldx 	#$55
 		.include "generated/rpl.inc"

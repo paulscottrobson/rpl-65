@@ -77,7 +77,7 @@ ProgramStart	= MemoryStart + $100 		; where code actually goes.
 ; ******************************************************************************
 
 lowStack = StackAddress 					; low stack bytes
-highStack = StackAddress+256				; high stack bytes
+highStack = StackAddress+128				; high stack bytes
 
 ; ******************************************************************************
 ;
