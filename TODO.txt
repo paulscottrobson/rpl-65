@@ -1,8 +1,9 @@
 TODO
 
--	Indexing code
--	Import Structures
 -	Call/Return code.
--	Assembler
--	List Old Save Load
+-	Write ball demo :)
+-	Break test ?
+-	List 
+-	Old (use Skipper in IF) Save Load
+-	Assembler []
 

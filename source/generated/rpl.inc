@@ -1,3 +1,4 @@
+TOK_NOT_CONTROL = $06
 TOK_STRUCT_INC = $06
 TOK_STRUCT_DEC = $09
 TOK_STRUCT_NEUTRAL = $0c
@@ -39,34 +40,36 @@ KWD_ALLOC                      = $0021 ; alloc
 KWD_HAT                        = $0022 ; ^
 KWD_LSQPAREN                   = $0023 ; [
 KWD_RSQPAREN                   = $0024 ; ]
-KWD_ABS                        = $0025 ; abs
-KWD_NEGATE                     = $0026 ; negate
-KWD_NOT                        = $0027 ; not
-KWD_PLUSPLUS                   = $0028 ; ++
-KWD_MINUSMINUS                 = $0029 ; --
-KWD_BSWAP                      = $002a ; bswap
-KWD_LESSLESS                   = $002b ; <<
-KWD_GREATERGREATER             = $002c ; >>
-KWD_SGN                        = $002d ; sgn
-KWD_RND                        = $002e ; rnd
-KWD_CLR                        = $002f ; clr
-KWD_DROP                       = $0030 ; drop
-KWD_DUP                        = $0031 ; dup
-KWD_NIP                        = $0032 ; nip
-KWD_OVER                       = $0033 ; over
-KWD_SWAP                       = $0034 ; swap
-KWD_ELSE                       = $0035 ; else
-KWD_INDEX                      = $0036 ; index
-KWD_SEMICOLON                  = $0037 ; ;
-KWD_ASSERT                     = $0038 ; assert
-KWD_LIST                       = $0039 ; list
-KWD_NEW                        = $003a ; new
-KWD_OLD                        = $003b ; old
-KWD_STOP                       = $003c ; stop
-KWD_RUN                        = $003d ; run
-KWD_END                        = $003e ; end
-KWD_SAVE                       = $003f ; save
-KWD_LOAD                       = $0040 ; load
+KWD_SYS                        = $0025 ; sys
+KWD_QMARK                      = $0026 ; ?
+KWD_ABS                        = $0027 ; abs
+KWD_NEGATE                     = $0028 ; negate
+KWD_NOT                        = $0029 ; not
+KWD_PLUSPLUS                   = $002a ; ++
+KWD_MINUSMINUS                 = $002b ; --
+KWD_BSWAP                      = $002c ; bswap
+KWD_LESSLESS                   = $002d ; <<
+KWD_GREATERGREATER             = $002e ; >>
+KWD_SGN                        = $002f ; sgn
+KWD_RND                        = $0030 ; rnd
+KWD_CLR                        = $0031 ; clr
+KWD_DROP                       = $0032 ; drop
+KWD_DUP                        = $0033 ; dup
+KWD_NIP                        = $0034 ; nip
+KWD_OVER                       = $0035 ; over
+KWD_SWAP                       = $0036 ; swap
+KWD_ELSE                       = $0037 ; else
+KWD_INDEX                      = $0038 ; index
+KWD_SEMICOLON                  = $0039 ; ;
+KWD_ASSERT                     = $003a ; assert
+KWD_LIST                       = $003b ; list
+KWD_NEW                        = $003c ; new
+KWD_OLD                        = $003d ; old
+KWD_STOP                       = $003e ; stop
+KWD_RUN                        = $003f ; run
+KWD_END                        = $0040 ; end
+KWD_SAVE                       = $0041 ; save
+KWD_LOAD                       = $0042 ; load
 
 KeywordText:
 	.text $01,$ff                          ; $0000 %eol
@@ -106,34 +109,36 @@ KeywordText:
 	.text $01,$de                          ; $0022 ^
 	.text $01,$db                          ; $0023 [
 	.text $01,$dd                          ; $0024 ]
-	.text $03,$41,$42,$d3                  ; $0025 abs
-	.text $06,$4e,$45,$47,$41,$54,$c5      ; $0026 negate
-	.text $03,$4e,$4f,$d4                  ; $0027 not
-	.text $02,$2b,$ab                      ; $0028 ++
-	.text $02,$2d,$ad                      ; $0029 --
-	.text $05,$42,$53,$57,$41,$d0          ; $002a bswap
-	.text $02,$3c,$bc                      ; $002b <<
-	.text $02,$3e,$be                      ; $002c >>
-	.text $03,$53,$47,$ce                  ; $002d sgn
-	.text $03,$52,$4e,$c4                  ; $002e rnd
-	.text $03,$43,$4c,$d2                  ; $002f clr
-	.text $04,$44,$52,$4f,$d0              ; $0030 drop
-	.text $03,$44,$55,$d0                  ; $0031 dup
-	.text $03,$4e,$49,$d0                  ; $0032 nip
-	.text $04,$4f,$56,$45,$d2              ; $0033 over
-	.text $04,$53,$57,$41,$d0              ; $0034 swap
-	.text $04,$45,$4c,$53,$c5              ; $0035 else
-	.text $05,$49,$4e,$44,$45,$d8          ; $0036 index
-	.text $01,$bb                          ; $0037 ;
-	.text $06,$41,$53,$53,$45,$52,$d4      ; $0038 assert
-	.text $04,$4c,$49,$53,$d4              ; $0039 list
-	.text $03,$4e,$45,$d7                  ; $003a new
-	.text $03,$4f,$4c,$c4                  ; $003b old
-	.text $04,$53,$54,$4f,$d0              ; $003c stop
-	.text $03,$52,$55,$ce                  ; $003d run
-	.text $03,$45,$4e,$c4                  ; $003e end
-	.text $04,$53,$41,$56,$c5              ; $003f save
-	.text $04,$4c,$4f,$41,$c4              ; $0040 load
+	.text $03,$53,$59,$d3                  ; $0025 sys
+	.text $01,$bf                          ; $0026 ?
+	.text $03,$41,$42,$d3                  ; $0027 abs
+	.text $06,$4e,$45,$47,$41,$54,$c5      ; $0028 negate
+	.text $03,$4e,$4f,$d4                  ; $0029 not
+	.text $02,$2b,$ab                      ; $002a ++
+	.text $02,$2d,$ad                      ; $002b --
+	.text $05,$42,$53,$57,$41,$d0          ; $002c bswap
+	.text $02,$3c,$bc                      ; $002d <<
+	.text $02,$3e,$be                      ; $002e >>
+	.text $03,$53,$47,$ce                  ; $002f sgn
+	.text $03,$52,$4e,$c4                  ; $0030 rnd
+	.text $03,$43,$4c,$d2                  ; $0031 clr
+	.text $04,$44,$52,$4f,$d0              ; $0032 drop
+	.text $03,$44,$55,$d0                  ; $0033 dup
+	.text $03,$4e,$49,$d0                  ; $0034 nip
+	.text $04,$4f,$56,$45,$d2              ; $0035 over
+	.text $04,$53,$57,$41,$d0              ; $0036 swap
+	.text $04,$45,$4c,$53,$c5              ; $0037 else
+	.text $05,$49,$4e,$44,$45,$d8          ; $0038 index
+	.text $01,$bb                          ; $0039 ;
+	.text $06,$41,$53,$53,$45,$52,$d4      ; $003a assert
+	.text $04,$4c,$49,$53,$d4              ; $003b list
+	.text $03,$4e,$45,$d7                  ; $003c new
+	.text $03,$4f,$4c,$c4                  ; $003d old
+	.text $04,$53,$54,$4f,$d0              ; $003e stop
+	.text $03,$52,$55,$ce                  ; $003f run
+	.text $03,$45,$4e,$c4                  ; $0040 end
+	.text $04,$53,$41,$56,$c5              ; $0041 save
+	.text $04,$4c,$4f,$41,$c4              ; $0042 load
 	.byte 0
 
 	.align 2
@@ -144,12 +149,12 @@ DispatchHandler:
 	.word ExecuteComment           ; $0003 %comment
 	.word StringConstant           ; $0004 %qstring
 	.word SyntaxError              ; $0005 %define
-	.word SyntaxError              ; $0006 if
-	.word SyntaxError              ; $0007 repeat
-	.word SyntaxError              ; $0008 for
-	.word SyntaxError              ; $0009 endif
-	.word SyntaxError              ; $000a until
-	.word SyntaxError              ; $000b next
+	.word Structure_If             ; $0006 if
+	.word Struct_Repeat            ; $0007 repeat
+	.word Struct_For               ; $0008 for
+	.word Structure_Endif          ; $0009 endif
+	.word Struct_Until             ; $000a until
+	.word Struct_Next              ; $000b next
 	.word MulInteger16             ; $000c *
 	.word DivInteger16             ; $000d /
 	.word ModInteger16             ; $000e mod
@@ -175,32 +180,34 @@ DispatchHandler:
 	.word Command_Store            ; $0022 ^
 	.word SyntaxError              ; $0023 [
 	.word SyntaxError              ; $0024 ]
-	.word Unary_Absolute           ; $0025 abs
-	.word Unary_Negate             ; $0026 negate
-	.word Unary_Not                ; $0027 not
-	.word Unary_Increment          ; $0028 ++
-	.word Unary_Decrement          ; $0029 --
-	.word Unary_BSwap              ; $002a bswap
-	.word Unary_Shl                ; $002b <<
-	.word Unary_Shr                ; $002c >>
-	.word Unary_Sgn                ; $002d sgn
-	.word Random_Handler           ; $002e rnd
-	.word Stack_Empty              ; $002f clr
-	.word Stack_Drop               ; $0030 drop
-	.word Stack_Dup                ; $0031 dup
-	.word Stack_Nip                ; $0032 nip
-	.word Stack_Over               ; $0033 over
-	.word Stack_Swap               ; $0034 swap
-	.word SyntaxError              ; $0035 else
-	.word SyntaxError              ; $0036 index
-	.word SyntaxError              ; $0037 ;
-	.word Command_Assert           ; $0038 assert
-	.word SyntaxError              ; $0039 list
-	.word Command_New              ; $003a new
-	.word SyntaxError              ; $003b old
-	.word Command_Stop             ; $003c stop
-	.word ExecuteProgram           ; $003d run
-	.word Command_End              ; $003e end
-	.word SyntaxError              ; $003f save
-	.word SyntaxError              ; $0040 load
+	.word Command_Sys              ; $0025 sys
+	.word Command_DumpStack        ; $0026 ?
+	.word Unary_Absolute           ; $0027 abs
+	.word Unary_Negate             ; $0028 negate
+	.word Unary_Not                ; $0029 not
+	.word Unary_Increment          ; $002a ++
+	.word Unary_Decrement          ; $002b --
+	.word Unary_BSwap              ; $002c bswap
+	.word Unary_Shl                ; $002d <<
+	.word Unary_Shr                ; $002e >>
+	.word Unary_Sgn                ; $002f sgn
+	.word Random_Handler           ; $0030 rnd
+	.word Stack_Empty              ; $0031 clr
+	.word Stack_Drop               ; $0032 drop
+	.word Stack_Dup                ; $0033 dup
+	.word Stack_Nip                ; $0034 nip
+	.word Stack_Over               ; $0035 over
+	.word Stack_Swap               ; $0036 swap
+	.word Structure_Else           ; $0037 else
+	.word Struct_Index             ; $0038 index
+	.word SyntaxError              ; $0039 ;
+	.word Command_Assert           ; $003a assert
+	.word SyntaxError              ; $003b list
+	.word Command_New              ; $003c new
+	.word SyntaxError              ; $003d old
+	.word Command_Stop             ; $003e stop
+	.word ExecuteProgram           ; $003f run
+	.word Command_End              ; $0040 end
+	.word SyntaxError              ; $0041 save
+	.word SyntaxError              ; $0042 load
 

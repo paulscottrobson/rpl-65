@@ -27,6 +27,7 @@ class Tokens(object):
 			Tokens.constants = {}
 			self.currentToken = 0
 			self.addTokens("%eol %const %call %comment %qstring %define")
+			self.mark("TOK_NOT_CONTROL")
 			self.mark("TOK_STRUCT_INC")
 			self.addTokens("if repeat for")
 			self.mark("TOK_STRUCT_DEC")
@@ -75,7 +76,7 @@ class Tokens(object):
 		return """
 			* /	mod	+ -	and	or xor shl shr
 			= <> > < >= <=
-			c@ c! @ ! d! alloc ^ [ ]
+			c@ c! @ ! d! alloc ^ [ ] sys ?
 			abs negate not ++ -- bswap << >> sgn rnd
 			clr drop dup nip over swap
 			else index ; assert

@@ -1,6 +1,9 @@
 //
 //		Test.
 //
-442 ^B B B B
-513 ^FRED 1 NEGATE ^JIM FRED JIM FRED JIM 22 ^FX FX
+$a002 ^a 1 a[] ?
+two.star
+repeat 0 until
+:star 42 ;
+:two.star star star ;
 

@@ -44,9 +44,14 @@ WarmStart:
 		.include "words/stack.asm"
 		.include "words/store.asm"
 		.include "words/system.asm"
+		
 		.include "words/arithmetic/binary.asm"
 		.include "words/arithmetic/compare.asm"
 		.include "words/arithmetic/divide.asm"
 		.include "words/arithmetic/multiply.asm"
 		.include "words/arithmetic/unary.asm"		
 		
+		.include "words/structures/if.asm"
+		.include "words/structures/repeat.asm"
+		.include "words/structures/for.asm"
+

@@ -56,3 +56,78 @@ Command_Assert: ;; [assert]
 		NextCommand
 _CAFail:
 		rerror 	"ASSERT"
+
+; ******************************************************************************
+;
+;							SYS Call M/C routine
+;
+; ******************************************************************************
+
+Command_Sys: ;; [sys]
+		StartCommand
+		lda 	lowStack,x 					; save call address
+		sta 	zTemp0
+		lda 	highStack,x
+		sta 	zTemp0+1
+		dex 								; pop tos
+		phx 								; save XY
+		phy
+		lda 	FastVariables+('A'-'A'+1)*2 ; load AXY
+		ldx 	FastVariables+('X'-'A'+1)*2 
+		ldy 	FastVariables+('Y'-'A'+1)*2 
+		jsr 	_CSCallInd
+		ply 								; restore XY
+		plx
+		NextCommand
+_CSCallInd:
+		jmp 	(zTemp0)		
+
+; ******************************************************************************
+;
+;								Stack Dump
+;
+; ******************************************************************************
+
+Command_DumpStack: ;; [?]
+		StartCommand
+		phx 								; save pos and sp
+		phy
+		stx 	SignCount
+		ldx 	#$FF
+_CDSLoop:
+		cpx 	SignCount 					; done all ?
+		beq 	_CDSExit 					
+		inx
+		phx 								; save SP
+		lda 	highStack,x 				; get tos
+		tay
+		lda 	lowStack,x
+		tax
+		cpy 	#0
+		bpl 	_CDSPositive
+		lda 	#"-" 						; minus
+		jsr 	PrintCharacter
+		tya 								; negate YX
+		eor 	#$FF
+		tay
+		txa 	
+		eor 	#$FF
+		tax
+		inx
+		bne 	_CDSPositive
+		iny
+_CDSPositive:
+		jsr 	PrintIntegerUnsigned
+		lda 	#" " 						; space
+		jsr 	PrintCharacter
+		plx
+		bra 	_CDSLoop
+_CDSExit:
+		lda 	#"<"
+		jsr 	PrintCharacter
+		jsr 	PrintCharacter
+		lda 	#13 						; CR
+		jsr 	PrintCharacter
+		ply
+		plx
+		NextCommand

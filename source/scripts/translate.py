@@ -34,15 +34,15 @@ class Translator(object):
 	#
 	#		Translate a single line.
 	#
-	def translateLine(self,line):
+	def translateLine(self,line,words = {}):
 		self.code = []														# code words here.
 		while line.strip() != "":											# while more
-			line =self.translateOne(line).strip()							# translate one element
+			line =self.translateOne(line,words).strip()						# translate one element
 		return self.code
 	#
 	#		Translate a single element.
 	#
-	def translateOne(self,s):
+	def translateOne(self,s,words):
 		#
 		#		Constants first
 		#
@@ -83,7 +83,12 @@ class Translator(object):
 		#
 		m = re.match("^([A-Za-z\\.]+)(.*)$",s)
 		if m is not None:
-			self.code += self.convertIdentifier(m.group(1))
+			if m.group(1) in words:
+				self.code.append(self.tokenLookup["%CALL"])
+				self.code.append(words[m.group(1)] & 0xFF)
+				self.code.append(words[m.group(1)] >> 8)
+			else:
+				self.code += self.convertIdentifier(m.group(1))
 			return m.group(2).strip()
 
 		assert False,"Can't process '"+s+"'"
