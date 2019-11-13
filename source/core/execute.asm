@@ -55,7 +55,6 @@ _ELNotToken:
 		dey
 		cmp 	#KWD_LSQPAREN 				; if not [ then it is a simple variable
 		beq 	_ELNotFastVariable 			; which we can optimise.
-		bra 	_ELNotFastVariable ; FUDGE.
 		;
 		phy 								; save Y
 		lda 	(codePtr),y 				; variable E0-FF
@@ -75,9 +74,38 @@ _ELNotToken:
 		;
 _ELNotFastVariable:		
 		clc									; do not autocreate if not found.
-		sec ; FUDGE !!!
 		jsr 	VariableFind				; find the variable.
-		.byte 	$FF
+		phy 								; copy to stack
+		inx
+		lda 	(zTemp0)
+		sta 	lowStack,x
+		ldy 	#1
+		lda 	(zTemp0),y
+		sta 	highStack,x
+		ply
+		bra 	ExecuteLoop
+
+; ******************************************************************************
+;
+;							Advance to next line.
+;
+; ******************************************************************************
+
+ExecuteNextLine:	;; [%eol]
+ExecuteComment:		;; [%comment]
+		StartCommand
+		clc 								; skip forward
+		lda 	(codePtr)
+		clc
+		adc 	codePtr
+		sta 	codePtr
+		bcc 	_ENLNoCarry
+		inc 	codePtr+1
+_ENLNoCarry:				
+		ldy 	#3 							; start of next line
+		lda 	(codePtr) 					; check offset non zero
+		bne 	ExecuteLoop
+		jmp	 	Command_End 				; if zero end program.
 
 ; ******************************************************************************
 ;
@@ -118,26 +146,4 @@ StringConstant:	 ;; [%qstring]
 		adc 	(codePtr),y
 		tay
 		NextCommand
-
-; ******************************************************************************
-;
-;							Advance to next line.
-;
-; ******************************************************************************
-
-ExecuteNextLine:	;; [%eol]
-ExecuteComment:		;; [%comment]
-		StartCommand
-		clc 								; skip forward
-		lda 	(codePtr)
-		clc
-		adc 	codePtr
-		sta 	codePtr
-		bcc 	_ENLNoCarry
-		inc 	codePtr+1
-_ENLNoCarry:				
-		ldy 	#3 							; start of next line
-		lda 	(codePtr) 					; check offset non zero
-		bne 	ExecuteLoop
-		jmp	 	Command_End 				; if zero end program.
 

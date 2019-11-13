@@ -31,14 +31,15 @@ _EHNoCarry:
 		ldx 	#_EHMessage & $FF 			; print " AT "
 		ldy 	#_EHMessage >> 8
 		jsr 	PrintStringXY
-		ldy 	#2 							; line# into YX.
+		ldy 	#1 							; line# into YX.
 		lda 	(codePtr),y
 		tax
-		dey
+		iny
 		lda 	(codePtr),y
 		tay
 		jsr 	PrintIntegerUnsigned
 _EHNoLine:
+		bra 	_EHNoLine 						
 		;
 		jmp 	WarmStart
 

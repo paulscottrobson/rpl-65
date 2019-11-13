@@ -42,7 +42,6 @@ VariableFind:
 _VFIsNotFastVariable:
 		jsr 	VFSetupHashPointer 			; set up the hash pointer
 		jsr 	VFSearch 					; try to find the variable.
-		.byte 	$FF
 		bcs 	_VFEndSearch 				; found it, so exit
 		;
 		;		The identifier is not known
@@ -140,7 +139,7 @@ _VFSExit:
 ; ******************************************************************************
 ;
 ;		Create a new variable & initialise ; identifier at (codePtr),y.
-;		Initialise it, link it into the hash table.
+;		Initialise it, link it into the hash table, put address in zTemp1
 ;
 ; ******************************************************************************
 
@@ -149,20 +148,60 @@ VFCreate:
 		phx
 		phy
 		clc 								; add 6 to memVarPtr, saving its
-		lda 	memVarPtr 					; address in zTemp1 as we go.
-		sta 	zTemp1
+		lda 	memVarPtr 					; address in zTemp0 as we go.
+		sta 	zTemp0
 		adc 	#6
 		sta 	memVarPtr
 		lda 	memVarPtr+1
-		sta 	zTemp1+1
+		sta 	zTemp0+1
 		adc 	#0
 		sta 	memVarPtr+1
+		;
+		cmp 	allocPtr+1 					; out of memory ?
+		beq 	_VFCMemory
+		;
+		tya 								; work out identifier address
+		clc
+		adc 	codePtr
+		pha
+		iny
+		lda 	codePtr+1
+		adc 	#0
+		;
+		ldy 	#3 							; store in new record
+		sta 	(zTemp0),y
+		dey
+		pla
+		sta 	(zTemp0),y
+		;
+		ldy 	#4 							; clear new data
+		lda 	#0
+		sta 	(zTemp0),y
+		iny
+		sta 	(zTemp0),y
+		;
+		ldy 	#1 							; copy old first link to this link
+		lda 	(zTemp1)
+		sta 	(zTemp0)
+		lda 	(zTemp1),y
+		sta 	(zTemp0),y
+		;
+		lda 	zTemp0 						; put the new record at the front of the
+		sta 	(zTemp1) 					; list.
+		lda 	zTemp0+1
+		sta 	(zTemp1),y
+		;
+		sta 	zTemp1+1 					; copy into zTemp1 
+		lda 	zTemp0
+		sta 	zTemp1
 		;
 		ply
 		plx
 		pla
 		rts
-
+_VFCMemory:
+		rerror 	"MEMORY?"
+		
 ; ******************************************************************************
 ;
 ;					Set up the Hash table address in zTemp1.

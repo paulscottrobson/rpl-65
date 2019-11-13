@@ -1,7 +1,6 @@
 TODO
 
--	Variable create/search code.
--	Indexing code
 - 	Store code.
+-	Indexing code
 -	Import STOP etc. code.
 -	Import Structures
