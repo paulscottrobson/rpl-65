@@ -172,7 +172,7 @@ DispatchHandler:
 	.word Mem_WPoke                ; $001f !
 	.word Mem_DWPoke               ; $0020 d!
 	.word Mem_Alloc                ; $0021 alloc
-	.word SyntaxError              ; $0022 ^
+	.word Command_Store            ; $0022 ^
 	.word SyntaxError              ; $0023 [
 	.word SyntaxError              ; $0024 ]
 	.word Unary_Absolute           ; $0025 abs
@@ -194,13 +194,13 @@ DispatchHandler:
 	.word SyntaxError              ; $0035 else
 	.word SyntaxError              ; $0036 index
 	.word SyntaxError              ; $0037 ;
-	.word SyntaxError              ; $0038 assert
+	.word Command_Assert           ; $0038 assert
 	.word SyntaxError              ; $0039 list
-	.word SyntaxError              ; $003a new
+	.word Command_New              ; $003a new
 	.word SyntaxError              ; $003b old
-	.word SyntaxError              ; $003c stop
-	.word SyntaxError              ; $003d run
-	.word SyntaxError              ; $003e end
+	.word Command_Stop             ; $003c stop
+	.word ExecuteProgram           ; $003d run
+	.word Command_End              ; $003e end
 	.word SyntaxError              ; $003f save
 	.word SyntaxError              ; $0040 load
 

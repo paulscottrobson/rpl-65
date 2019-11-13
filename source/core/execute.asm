@@ -15,8 +15,7 @@
 ;
 ; ******************************************************************************
 
-ExecuteProgram:
-		set16 	FastVariables+2,$ABCD
+ExecuteProgram: ;; [run]
 
 		jsr 	StackReset 					; reset the CPU stack.
 		jsr 	ResetMemory 				; reset alloc pointers, variables etc.
@@ -76,6 +75,7 @@ _ELNotFastVariable:
 		clc									; do not autocreate if not found.
 		jsr 	VariableFind				; find the variable.
 		bcc 	_ELUnknown
+		jsr 	IndexCheck
 		phy 								; copy to stack
 		inx
 		lda 	(zTemp0)

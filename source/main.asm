@@ -26,7 +26,6 @@ Start:
 		jmp 	ExecuteProgram
 
 WarmStart:
-Command_End:
 		.byte 	$FF
 		ldx 	#$55
 		.include "generated/rpl.inc"
@@ -34,6 +33,7 @@ Command_End:
 		.include "core/error.asm"
 		.include "core/execute.asm"
 		.include "core/extern.asm"
+		.include "core/index.asm"
 		.include "core/reset.asm"
 		.include "core/stack.asm"
 		.include "core/tointeger.asm"
@@ -42,6 +42,8 @@ Command_End:
 		
 		.include "words/memory.asm"
 		.include "words/stack.asm"
+		.include "words/store.asm"
+		.include "words/system.asm"
 		.include "words/arithmetic/binary.asm"
 		.include "words/arithmetic/compare.asm"
 		.include "words/arithmetic/divide.asm"

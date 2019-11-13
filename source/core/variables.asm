@@ -225,3 +225,4 @@ VFSetupHashPointer:
 		sta 	zTemp1+1
 		pla
 		rts
+		
