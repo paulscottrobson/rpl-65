@@ -16,6 +16,7 @@
 ;		codePtr must be in the program area.
 ;
 ;		Returns the calculated address in zTemp0. The stack is at X on entry.
+;		Returns with carry set. If fails (does not exist fail only), returns CC
 ;
 ; ******************************************************************************
 
@@ -35,6 +36,7 @@ VariableFind:
 		plp 								; create flag is irrelevant.
 		plx									; restore the old stack position
 		iny 								; skip over the single identifier character
+		sec 								; return with CS
 		rts
 		;
 		;		It's not A-Z. So look it up in the hash tables
@@ -48,7 +50,10 @@ _VFIsNotFastVariable:
 		;
 		plp 								; do we want autocreate
 		bcs 	_VFCreate
-		rerror 	"VARIABLE?"					; no, then we have no idea.
+		plx 								; restore stack position and return CC
+		clc
+		rts
+
 _VFCreate:
 		jsr 	VFSetupHashPointer 			; reset the hash pointer
 		jsr 	VFCreate 					; create a new record and link it in.
@@ -76,6 +81,7 @@ _VFSkipExit:
 		cmp 	#$E0
 		bcc 	_VFSkipExit
 		plx 								; restore X
+		sec
 		rts
 
 ; ******************************************************************************

@@ -75,6 +75,7 @@ _ELNotToken:
 _ELNotFastVariable:		
 		clc									; do not autocreate if not found.
 		jsr 	VariableFind				; find the variable.
+		bcc 	_ELUnknown
 		phy 								; copy to stack
 		inx
 		lda 	(zTemp0)
@@ -84,6 +85,9 @@ _ELNotFastVariable:
 		sta 	highStack,x
 		ply
 		bra 	ExecuteLoop
+_ELUnknown:
+		.byte 	$FF
+		rerror 	"UNKNOWN?"
 
 ; ******************************************************************************
 ;

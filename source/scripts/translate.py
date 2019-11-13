@@ -110,7 +110,7 @@ class Translator(object):
 	#
 	def convertIdentifier(self,ident):
 		ident = ident.upper().replace(".",chr(ord('Z')+1))
-		ident = [ord(x)-ord('A')+0xC0 for x in ident]
+		ident = [ord(x)-ord('A')+0xC0+1 for x in ident]
 		ident[-1] += 0x20
 		return ident
 	#
