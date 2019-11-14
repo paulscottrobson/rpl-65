@@ -1,7 +1,7 @@
 TODO
 
--	Write ball demo :)
--	Break test ?
+-	Stack test
+-	Break test
 -	List 
 -	Old (use Skipper in IF) Save Load
 -	Assembler []

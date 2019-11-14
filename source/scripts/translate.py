@@ -46,10 +46,11 @@ class Translator(object):
 		#
 		#		Constants first
 		#
-		m = re.match("^([0-9]+)(.*)",s)	
+		m = re.match("^([0-9]+)(\\-?)(.*)",s)	
 		if m is not None:
-			self.appendConstant(int(m.group(1)))
-			return m.group(2)
+			n = 1 if m.group(2) == "" else -1
+			self.appendConstant(int(m.group(1)) * n)
+			return m.group(3)
 		m = re.match("^\\$([0-9A-Fa-f]+)(.*)",s)	
 		if m is not None:
 			self.appendConstant(int(m.group(1),16))
@@ -96,11 +97,11 @@ class Translator(object):
 	#		Append a single constant
 	#
 	def appendConstant(self,n):
+		n = n & 0xFFFF
 		if n < 63:
 			self.code.append(0x80+n)
 		else:
 			self.code.append(self.tokenLookup["%CONST"])
-			n = n & 0xFFFF
 			self.code.append(n & 0xFF)
 			self.code.append(n >> 8)
 	#
