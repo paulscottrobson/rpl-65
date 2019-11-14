@@ -10,8 +10,17 @@
 ; *******************************************************************************************
 
 Cmd_List: 	;; [list]
+		StartCommand
 		stz 	zTemp2						; clear the lowest-number
 		stz 	zTemp2+1
+		cpx 	#$FF 						; empty stack
+		beq 	_CLNoStart
+		lda 	lowStack,x 					; copy TOS in
+		sta 	zTemp2
+		lda 	highStack,x
+		sta 	zTemp2+1
+		dex
+_CLNoStart:
 		lda 	#COL_GREEN
 		jsr 	ExternColour
 _CLNoStartLine:
@@ -44,7 +53,6 @@ _CLISkip:
 		inc 	codePtr+1
 		bra 	_CLILoop
 _CLIEnd:	
-		bra 	_CLIEnd
 		jmp 	WarmStart
 ;
 ;		List current line.

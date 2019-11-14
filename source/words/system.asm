@@ -22,6 +22,28 @@ Command_New: ;; [new]
 		
 ; ******************************************************************************
 ;
+;							 OLD unerase program
+;
+; ******************************************************************************
+
+Command_Old: ;; [old]
+		StartCommand
+		set16 	codePtr,ProgramStart 		; try and find first line.
+		ldy 	#3
+_COAdvance:	
+		cpy 	#192 						; first lines > this can't be recovered
+		bcs		_COFail
+		jsr 	AdvanceInCode
+		lda 	(codePtr),y
+		bne 	_COAdvance
+		iny 								; byte after end of line
+		sty 	ProgramStart 				; overwrite first byte with offset.
+_CONotDeleted:		
+		jmp 	WarmStart		
+_COFail:rerror	"CANT?"
+
+; ******************************************************************************
+;
 ;								END program
 ;
 ; ******************************************************************************

@@ -32,7 +32,7 @@ class BasicProgram(object):
 		self.src = open(fileName).readlines()								# read and tidy up.
 		if stripComments:
 			self.src = [s if s.find("//") < 0 else s[:s.find("//")] for s in self.src]
-		self.src = [s.strip().upper().replace("\t"," ") for s in self.src if s != ""]		
+		self.src = [s.strip().upper().replace("\t"," ") for s in self.src if s.strip() != ""]		
 
 		for i in range(0,len(self.src)):									# scan for word definitions.
 			if self.src[i].startswith(":"):									# : first ?

@@ -204,7 +204,7 @@ DispatchHandler:
 	.word Command_Assert           ; $003a assert
 	.word Cmd_List                 ; $003b list
 	.word Command_New              ; $003c new
-	.word SyntaxError              ; $003d old
+	.word Command_Old              ; $003d old
 	.word Command_Stop             ; $003e stop
 	.word ExecuteProgram           ; $003f run
 	.word Command_End              ; $0040 end

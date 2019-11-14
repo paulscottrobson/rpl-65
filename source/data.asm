@@ -22,7 +22,7 @@ StackAddress = $0600						; Stack (1/2k bytes)
 InputBuffer = $0800							; Input Buffer
 IntStack = $09FF 							; Interpreter Stack
 ConvertBuffer = $08E0 						; Conversion buffer (numbers)
-
+TokenBuffer = $0A00 						; Tokenisation Buffer
 HashTableSize = 16 							; size of hash table (# entries)
 
 ; ******************************************************************************
@@ -54,6 +54,7 @@ allocPtr:		.word ? 					; memory allocation pointer (down)
 memVarPtr:		.word ? 					; pointer for memory variables (up)
 randomSeed:		.word ? 					; random number seed
 prefixCharacter:.byte ?						; char to print before listed element.
+breakCount:		.byte ? 					; counter avoids repeated break checks
 
 		.send zeroPage
 
@@ -78,7 +79,7 @@ ProgramStart	= MemoryStart + $100 		; where code actually goes.
 ; ******************************************************************************
 
 lowStack = StackAddress 					; low stack bytes
-highStack = StackAddress+128				; high stack bytes
+highStack = StackAddress+256				; high stack bytes
 
 ; ******************************************************************************
 ;

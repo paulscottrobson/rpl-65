@@ -34,6 +34,12 @@ ShortConstant:
 		;		Main execution loop
 		;
 ExecuteLoop:
+		inc 	breakCount 					; check break sometimes.
+		bne 	_EXNoBreak
+		jsr 	ExternCheckBreak
+_EXNoBreak:
+		cpx		#254 						; stack underflow
+		beq 	_ELUnderflow
 		lda 	(codePtr),y 				; get next character
 		bmi 	_ELNotToken
 		iny 								; skip the token
@@ -88,6 +94,8 @@ _ELNotFastVariable:
 _ELUnknown:
 		.byte 	$FF
 		rerror 	"UNKNOWN?"
+_ELUnderflow:
+		rerror  "STACK?"
 
 ; ******************************************************************************
 ;

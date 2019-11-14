@@ -1,22 +1,22 @@
 //
 //		Test.
 //
-4- 42 list "abc"
- "this is a string" ' this is a comment
-$6000 ^ballmem 
+
+old $6000 ^ballmem "hello" ''
 32 ^count 
 142 ^A $FFD2 sys
 count for index select ball.init next
 
-repeat 
+80 for
 	count for index select ball.move next
-	//? repeat 0 until
-0 until
+next
+end
 
 :select << << << << ballmem + ^ball  ;
 :ball.init rnd abs 80 mod ^ball[0] rnd abs 60 mod ^ball[1] 
 			rsgn ^ball[2] rsgn ^ball[3] rnd 7 and ++ ^ball[4] 81 ball.draw ;
 :rsgn rnd 1 and if 1 else 1- endif ;
+
 :ball.draw 
 	ball[0] << $9f20 c!
 	ball[1] $9f21 c!
