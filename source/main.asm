@@ -22,6 +22,9 @@
 Start:
 		ldx 	#$FF 						; reset the stack.
 		txs
+
+		.include "tokenise/test.asm"		; uncomment this to test the tokeniser code.
+
 		jsr 	ExternInitialise		
 		jmp 	ExecuteProgram
 
@@ -40,6 +43,8 @@ WarmStart:
 		.include "core/tostring.asm"
 		.include "core/variables.asm"
 		
+		.include "tokenise/tokeniser.asm"
+
 		.include "words/list.asm"
 		.include "words/memory.asm"
 		.include "words/stack.asm"
