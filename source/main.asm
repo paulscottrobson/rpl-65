@@ -51,6 +51,7 @@ WarmStart:
 		.include "words/arithmetic/multiply.asm"
 		.include "words/arithmetic/unary.asm"		
 		
+		.include "words/structures/call.asm"
 		.include "words/structures/if.asm"
 		.include "words/structures/repeat.asm"
 		.include "words/structures/for.asm"

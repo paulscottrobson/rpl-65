@@ -1,9 +1,9 @@
 //
 //		Test.
 //
-$a002 ^a 1 a[] ?
-two.star
+$a002  ?
+ten.star ?
 repeat 0 until
-:star 42 ;
-:two.star star star ;
+:star 42 ^A $FFD2 sys ;
+:ten.star 10 for star next ;
 

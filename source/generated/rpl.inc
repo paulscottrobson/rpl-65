@@ -145,7 +145,7 @@ KeywordText:
 DispatchHandler:
 	.word ExecuteNextLine          ; $0000 %eol
 	.word LongConstant             ; $0001 %const
-	.word SyntaxError              ; $0002 %call
+	.word Command_Call             ; $0002 %call
 	.word ExecuteComment           ; $0003 %comment
 	.word StringConstant           ; $0004 %qstring
 	.word SyntaxError              ; $0005 %define
@@ -200,7 +200,7 @@ DispatchHandler:
 	.word Stack_Swap               ; $0036 swap
 	.word Structure_Else           ; $0037 else
 	.word Struct_Index             ; $0038 index
-	.word SyntaxError              ; $0039 ;
+	.word Command_Return           ; $0039 ;
 	.word Command_Assert           ; $003a assert
 	.word SyntaxError              ; $003b list
 	.word Command_New              ; $003c new

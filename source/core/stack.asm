@@ -20,7 +20,7 @@ StackReset:
 		sta 	iStack
 		lda 	#IntStack >> 8
 		sta 	iStack+1
-		lda 	#STM_TOP					; dummy TOS value
+		lda 	#$FF						; dummy TOS value
 		sta 	(iStack)
 		rts
 
