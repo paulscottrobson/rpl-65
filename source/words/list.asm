@@ -71,7 +71,9 @@ _LCPadOut:									; pad out to align neatly
 		;
 		;		MAIN LOOP
 		;
-_LCLoop:lda 	(codePtr),y 				; [ ] never have a prefix.
+_LCLoop:lda 	#CTH_LINENO 				; reset colour.
+		jsr 	ExternColour
+		lda 	(codePtr),y 				; [ ] never have a prefix.
 		cmp 	#KWD_LSQPAREN
 		beq 	_LCNoPrefix
 		cmp 	#KWD_RSQPAREN
@@ -116,13 +118,7 @@ _LCIsIdentifier:
 		jsr 	ExternColour
 _LCIdentLoop:
 		lda 	(codePtr),y 				; keep printing 
-		and 	#$1F 						; 1-26 A-Z 27 .
-		ora 	#$40 						; ASCII except .
-		cmp 	#$40+27
-		bne 	_LCNotDot
-		lda 	#"."
-_LCNotDot:
-		jsr 	PrintCharacter
+		jsr 	ListPrintIDChar
 		lda 	(codePtr),y 				; get current
 		iny	
 		cmp 	#$E0 						; was it an end marker
@@ -162,7 +158,7 @@ _LCPrintYX:
 		jsr 	PrintCharacter
 _LCNoTrail:
 		ply 								; restore Y
-		bra 	_LCLoop
+		jmp 	_LCLoop
 		;
 		;		Token of some sort - includes strings,comments, defines, constants, calls and keywords.
 		;
@@ -218,4 +214,144 @@ _LCGoLoop:
 		;		Control token : comment, define, string or call (already done constant)
 		;
 _LCControl:
-		jmp 	_LCExit
+		cmp 	#KWD_SYS_CALL
+		beq 	_LCDecodeCall
+		cmp 	#KWD_SYS_DEFINE
+		beq 	_LCDecodeDefine
+		phy 								; save Y
+		ldy 	#'"'						; setup for String
+		ldx 	#CTH_STRING 	
+		cmp 	#KWD_SYS_QSTRING
+		beq 	_LCDecodeString
+		ldy 	#"'"						; setup for comment
+		ldx 	#CTH_COMMENT
+_LCDecodeString
+		txa 								; set colour
+		jsr 	ExternColour
+		tya 					
+		jsr 	PrintCharacter
+		ply 								; restore Y pos
+		pha 								; save end character on stack.
+		iny 								; get count into X
+		lda 	(codePtr),y
+		tax
+_LCOutString:								; output the string
+		iny 
+		cpx		#0 							; reached the end
+		beq 	_LCEndDecode
+		lda 	(codePtr),y
+		jsr 	PrintCharacter
+		dex
+		bra 	_LCOutString
+_LCEndDecode:
+		pla
+		cmp 	#"'"						; don't print last
+		beq 	_LCEDNoQuote
+		jsr 	PrintCharacter
+_LCEDNoQuote:		
+		jmp 	_LCLoop
+		;
+		;		Decide a definition
+		;
+_LCDecodeDefine:
+		lda 	#CTH_DEFINITION
+		jsr 	ExternColour
+		lda 	#":"
+		jsr 	PrintCharacter
+_LCCPrintDef:		
+		iny
+		lda 	(codePtr),y
+		tax
+_LCCOutDefine:
+		iny
+		cpx 	#0
+		beq 	_LCEDNoQuote
+		lda 	(codePtr),y
+		jsr 	ListPrintIDChar
+		dex
+		bra 	_LCCOutDefine
+		;
+		;		Decode a CALL.
+		;
+_LCDecodeCall:
+		iny 								; get line number into XA
+		lda 	(codePtr),y
+		pha
+		iny
+		lda 	(codePtr),y
+		iny
+		tax
+		pla
+		jsr 	ListFindLine 				; find that line.
+		bcc 	_LCNoDefinition
+		phy
+		ldy 	#3 							; look at first character
+		lda 	(zTemp0),y
+		cmp 	#KWD_SYS_DEFINE
+		bne 	_LCNoDefinition 			; not define
+		;
+		lda 	#CTH_CALLWORD
+		jsr 	ExternColour
+		iny
+		lda 	(zTemp0),y
+		tax
+_LCCOutCall:
+		iny
+		cpx 	#0
+		beq 	_LCEDEndCall
+		lda 	(zTemp0),y
+		jsr 	ListPrintIDChar
+		dex
+		bra 	_LCCOutCall
+_LCEDEndCall:
+		ply
+		jmp 	_LCLoop		
+
+_LCNoDefinition:
+		.byte 	$FF 						; definition is missing.
+
+;
+;		Print identifier character (C0-FF) in A
+;
+ListPrintIDChar:
+		and 	#$1F 						; 1-26 A-Z 27 .
+		ora 	#$40 						; ASCII except .
+		cmp 	#$40+27
+		bne 	_LCNotDot
+		lda 	#"."
+_LCNotDot:
+		jsr 	PrintCharacter
+		rts
+;
+;		Find Line XA, put pointer to line into zTemp0
+;
+ListFindLine:
+		phy
+		stx 	zTemp1+1
+		sta 	zTemp1
+		set16 	zTemp0,ProgramStart		
+_LFLSearch:
+		clc									; reached the end.
+		lda 	(zTemp0)
+		beq 	_LFLExit 					; exit with CC
+		ldy 	#1
+		lda 	zTemp1
+		cmp 	(zTemp0),y
+		bne 	_LFLNext
+		iny
+		lda 	zTemp1+1
+		cmp 	(zTemp0),y
+		beq 	_LFLFound
+_LFLNext:
+		clc
+		lda 	(zTemp0)
+		adc 	zTemp0
+		sta 	zTemp0
+		bcc 	_LFLSearch
+		inc 	zTemp0+1
+		bra 	_LFLSearch
+_LFLFound:
+		sec
+_LFLExit:
+		ply
+		rts

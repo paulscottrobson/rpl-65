@@ -1,8 +1,8 @@
 //
 //		Test.
 //
-4- 42 list
-' this is a comment' "this is a string"
+4- 42 list select 42
+ "this is a string" ' this is a comment
 $6000 ^ballmem 
 32 ^count 
 142 ^A $FFD2 sys
@@ -23,7 +23,10 @@ repeat
 	$10 $9f22 c! $9f23 c! ball[4] $9f23 c! ;	
 :ball.move 
 	32 ball.draw
-	ball[0] ball[2] + dup ^ball[0] dup 80 >= swap 0 < or if ball[2] negate ^ball[2] endif
-	ball[1] ball[3] + dup ^ball[1] dup 60 >= swap 0 < or if ball[3] negate ^ball[3] endif
+	ball[0] ball[2] + dup ^ball[0] 
+	dup 80 >= swap 0 < or if ball[2] negate ^ball[2] endif
+	ball[1] ball[3] + dup ^ball[1] 
+	dup 60 >= swap 0 < or if ball[3] negate ^ball[3] endif
 	81 ball.draw 
 ;
+
