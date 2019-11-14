@@ -226,50 +226,27 @@ _LCControl:
 		ldy 	#"'"						; setup for comment
 		ldx 	#CTH_COMMENT
 _LCDecodeString
-		txa 								; set colour
-		jsr 	ExternColour
 		tya 					
 		jsr 	PrintCharacter
 		ply 								; restore Y pos
 		pha 								; save end character on stack.
-		iny 								; get count into X
-		lda 	(codePtr),y
-		tax
-_LCOutString:								; output the string
-		iny 
-		cpx		#0 							; reached the end
-		beq 	_LCEndDecode
-		lda 	(codePtr),y
-		jsr 	PrintCharacter
-		dex
-		bra 	_LCOutString
-_LCEndDecode:
-		pla
+		txa 								; get colour back.
+		jsr 	ListPrintCodeIdentifier		
+		pla 								; last character
 		cmp 	#"'"						; don't print last
 		beq 	_LCEDNoQuote
 		jsr 	PrintCharacter
 _LCEDNoQuote:		
 		jmp 	_LCLoop
 		;
-		;		Decide a definition
+		;		Decode a definition
 		;
 _LCDecodeDefine:
-		lda 	#CTH_DEFINITION
-		jsr 	ExternColour
 		lda 	#":"
 		jsr 	PrintCharacter
-_LCCPrintDef:		
-		iny
-		lda 	(codePtr),y
-		tax
-_LCCOutDefine:
-		iny
-		cpx 	#0
-		beq 	_LCEDNoQuote
-		lda 	(codePtr),y
-		jsr 	ListPrintIDChar
-		dex
-		bra 	_LCCOutDefine
+		lda 	#CTH_DEFINITION
+		jsr 	ListPrintCodeIdentifier
+		jmp 	_LCLoop
 		;
 		;		Decode a CALL.
 		;
@@ -291,29 +268,50 @@ _LCDecodeCall:
 		bne 	_LCNoDefinition 			; not define
 		;
 		lda 	#CTH_CALLWORD
-		jsr 	ExternColour
-		iny
-		lda 	(zTemp0),y
-		tax
-_LCCOutCall:
-		iny
-		cpx 	#0
-		beq 	_LCEDEndCall
-		lda 	(zTemp0),y
-		jsr 	ListPrintIDChar
-		dex
-		bra 	_LCCOutCall
-_LCEDEndCall:
+		jsr 	ListPrintIdentifier
 		ply
 		jmp 	_LCLoop		
 
 _LCNoDefinition:
 		.byte 	$FF 						; definition is missing.
-
 ;
-;		Print identifier character (C0-FF) in A
+;		Print identifier at codePtr in colour A, advance Y past A
+;
+ListPrintCodeIdentifier:
+		pha 								; copy codePtr -> zTemp0
+		lda 	codePtr
+		sta 	zTemp0
+		lda 	codePtr+1
+		sta 	zTemp0+1
+		pla
+;
+;		Print identifier at zTemp0 in colour A, advance Y past A
+;
+ListPrintIdentifier:
+		pha
+		phx
+		jsr 	ExternColour
+		iny 								; skip over the type
+		lda 	(zTemp0),y 				; count in X
+		tax
+_LPILoop:
+		iny
+		cpx 	#0
+		beq 	_LPIExit
+		lda 	(zTemp0),y
+		jsr 	ListPrintIDChar
+		dex
+		bra 	_LPILoop
+_LPIExit:
+		plx
+		pla
+		rts
+;
+;		Print identifier character (C0-FF) or ASCII in A
 ;
 ListPrintIDChar:
+		cmp 	#0 							; check if ID char, if not just print
+		bpl	 	_LCNotDot
 		and 	#$1F 						; 1-26 A-Z 27 .
 		ora 	#$40 						; ASCII except .
 		cmp 	#$40+27

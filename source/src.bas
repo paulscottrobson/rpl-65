@@ -1,7 +1,7 @@
 //
 //		Test.
 //
-4- 42 list select 42
+4- 42 list "abc"
  "this is a string" ' this is a comment
 $6000 ^ballmem 
 32 ^count 
