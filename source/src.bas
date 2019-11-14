@@ -1,6 +1,8 @@
 //
 //		Test.
 //
+4- 42 list
+' this is a comment' "this is a string"
 $6000 ^ballmem 
 32 ^count 
 142 ^A $FFD2 sys

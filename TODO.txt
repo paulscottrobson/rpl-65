@@ -1,8 +1,9 @@
 TODO
 
+-	Complete list - start number, and call, comment, string and define.
 -	Stack test
 -	Break test
--	List 
 -	Old (use Skipper in IF) Save Load
+- 	Tokenisation/Editing.
 -	Assembler []
 

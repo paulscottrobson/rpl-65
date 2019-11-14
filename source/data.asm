@@ -53,6 +53,7 @@ signCount:		.byte ? 					; divide sign count.
 allocPtr:		.word ? 					; memory allocation pointer (down)
 memVarPtr:		.word ? 					; pointer for memory variables (up)
 randomSeed:		.word ? 					; random number seed
+prefixCharacter:.byte ?						; char to print before listed element.
 
 		.send zeroPage
 

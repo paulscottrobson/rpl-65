@@ -202,7 +202,7 @@ DispatchHandler:
 	.word Struct_Index             ; $0038 index
 	.word Command_Return           ; $0039 ;
 	.word Command_Assert           ; $003a assert
-	.word SyntaxError              ; $003b list
+	.word Cmd_List                 ; $003b list
 	.word Command_New              ; $003c new
 	.word SyntaxError              ; $003d old
 	.word Command_Stop             ; $003e stop

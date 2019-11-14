@@ -54,11 +54,10 @@ _EHMessage:
 
 PrintIntegerUnsigned:
 		jsr 	IntToString
-		pha
 		ldx 	#ConvertBuffer & $FF 		; print number
 		ldy 	#ConvertBuffer >> 8
 		jsr 	PrintStringXY
-		pla
+		tya
 		rts
 
 ; ******************************************************************************

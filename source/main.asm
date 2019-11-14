@@ -40,6 +40,7 @@ WarmStart:
 		.include "core/tostring.asm"
 		.include "core/variables.asm"
 		
+		.include "words/list.asm"
 		.include "words/memory.asm"
 		.include "words/stack.asm"
 		.include "words/store.asm"
