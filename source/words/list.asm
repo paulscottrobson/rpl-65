@@ -12,7 +12,8 @@
 Cmd_List: 	;; [list]
 		stz 	zTemp2						; clear the lowest-number
 		stz 	zTemp2+1
-
+		lda 	#COL_GREEN
+		jsr 	ExternColour
 _CLNoStartLine:
 		set16 	codePtr,programStart
 		;
@@ -49,8 +50,6 @@ _CLIEnd:
 ;		List current line.
 ;
 ListCurrent:
-		lda 	#CTH_LINENO
-		jsr 	ExternColour 				; set colour
 		ldy 	#1							; print line#
 		lda 	(codePtr),y
 		tax
@@ -71,8 +70,7 @@ _LCPadOut:									; pad out to align neatly
 		;
 		;		MAIN LOOP
 		;
-_LCLoop:lda 	#CTH_LINENO 				; reset colour.
-		jsr 	ExternColour
+_LCLoop:
 		lda 	(codePtr),y 				; [ ] never have a prefix.
 		cmp 	#KWD_LSQPAREN
 		beq 	_LCNoPrefix
@@ -98,8 +96,6 @@ _LCNoPrefix:
 		iny
 		phy 								; push pos		
 		ldy 	#0
-		lda 	#CTH_NUMBER
-		jsr 	ExternColour
 		jsr 	PrintIntegerUnsigned
 		ply
 		bra 	_LCLoop
@@ -114,8 +110,6 @@ _LCExit:
 		;		Handle Identifiers $C0-$FF
 		;
 _LCIsIdentifier:
-		lda 	#CTH_IDENT
-		jsr 	ExternColour
 _LCIdentLoop:
 		lda 	(codePtr),y 				; keep printing 
 		jsr 	ListPrintIDChar
@@ -149,8 +143,6 @@ _LCConstant:
 		iny
 _LCNotNegative:
 _LCPrintYX:
-		lda 	#CTH_NUMBER
-		jsr 	ExternColour
 		jsr 	PrintIntegerUnsigned
 		pla 								; restore sign
 		bpl 	_LCNoTrail
@@ -173,8 +165,6 @@ _LCIsToken:
 _LCIsKeywordToken:
 		sta 	zTemp0 						; save token #
 		set16	zTemp1,KeywordText 			; zTemp1 is index into table.
-		lda 	#CTH_TOKEN 					; set to token colour
-		jsr 	ExternColour
 		phy 								; save code offset
 _LCForward:
 		lda 	zTemp0 						; done if token number is zero.
@@ -220,17 +210,14 @@ _LCControl:
 		beq 	_LCDecodeDefine
 		phy 								; save Y
 		ldy 	#'"'						; setup for String
-		ldx 	#CTH_STRING 	
 		cmp 	#KWD_SYS_QSTRING
 		beq 	_LCDecodeString
 		ldy 	#"'"						; setup for comment
-		ldx 	#CTH_COMMENT
 _LCDecodeString
 		tya 					
 		jsr 	PrintCharacter
 		ply 								; restore Y pos
 		pha 								; save end character on stack.
-		txa 								; get colour back.
 		jsr 	ListPrintCodeIdentifier		
 		pla 								; last character
 		cmp 	#"'"						; don't print last
@@ -244,7 +231,6 @@ _LCEDNoQuote:
 _LCDecodeDefine:
 		lda 	#":"
 		jsr 	PrintCharacter
-		lda 	#CTH_DEFINITION
 		jsr 	ListPrintCodeIdentifier
 		jmp 	_LCLoop
 		;
@@ -267,7 +253,6 @@ _LCDecodeCall:
 		cmp 	#KWD_SYS_DEFINE
 		bne 	_LCNoDefinition 			; not define
 		;
-		lda 	#CTH_CALLWORD
 		jsr 	ListPrintIdentifier
 		ply
 		jmp 	_LCLoop		
@@ -275,7 +260,7 @@ _LCDecodeCall:
 _LCNoDefinition:
 		.byte 	$FF 						; definition is missing.
 ;
-;		Print identifier at codePtr in colour A, advance Y past A
+;		Print identifier at codePtr advance Y past A
 ;
 ListPrintCodeIdentifier:
 		pha 								; copy codePtr -> zTemp0
@@ -285,14 +270,13 @@ ListPrintCodeIdentifier:
 		sta 	zTemp0+1
 		pla
 ;
-;		Print identifier at zTemp0 in colour A, advance Y past A
+;		Print identifier at zTemp0 advance Y past A
 ;
 ListPrintIdentifier:
 		pha
 		phx
-		jsr 	ExternColour
 		iny 								; skip over the type
-		lda 	(zTemp0),y 				; count in X
+		lda 	(zTemp0),y 					; count in X
 		tax
 _LPILoop:
 		iny
