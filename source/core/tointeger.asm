@@ -12,12 +12,14 @@
 ; ******************************************************************************
 ;
 ;			Convert String YX to Integer in YX. CS = Okay, CC = Failed.
+;			if okay returns characters consumed in A.
 ;
 ; ******************************************************************************
 
 StringToInt:
 		stx 	zTemp3 						; save string
 		sty 	zTemp3+1
+		stz 	signCount 					; signcount is the number of chars copied.
 
 		ldx 	#16 						; base to use.
 		ldy 	#1 							; character offset.
@@ -28,26 +30,6 @@ StringToInt:
 		;
 		dey 								; from character 0
 		ldx 	#10 						; base 10.
-		cmp 	#"-"						; first char is unary minus ?
-		bne 	_STIConvert 				; no, convert as +ve decimal
-		;
-		iny 								; skip the minus
-		jsr 	_STIConvert 				; convert the unsigned part.
-		bcc 	_STIExit 					; failed
-		;
-		txa 								; 1's complement YX
-		eor 	#$FF
-		tax
-		tya
-		eor 	#$FF
-		tay
-		;
-		inx 								; +1 to make it negative
-		sec
-		bne 	_STIExit
-		iny
-_STIExit:
-		rts		
 ;
 ;		Offset in token buffer in X, base to use in Y.
 ;
@@ -60,6 +42,17 @@ _STIConvert:
 		stz 	zTemp0+1
 		;
 _STILoop:
+		lda 	(zTemp3),y 					; check in range 0-9 A-F
+		cmp 	#"0"
+		bcc 	_STIFail
+		cmp 	#"9"+1
+		bcc 	_STIOkay
+		cmp 	#"A"
+		bcc 	_STIFail
+		cmp 	#"F"+1
+		bcs 	_STIFail
+_STIOkay:
+
 		lda 	zTemp0 						; copy current to zTemp2
 		sta 	zTemp2
 		lda 	zTemp0+1
@@ -88,20 +81,14 @@ _STINoAdd:
 		cpx 	#0 							; multiply finished ?
 		bne 	_STIMultiply
 		;
-		lda 	(zTemp3),y 					; check in range 0-9 A-F
-		and 	#$7F 						; remove End of Token bit if set
-		cmp 	#"0"
-		bcc 	_STIFail
-		cmp 	#"9"+1
-		bcc 	_STIOkay
-		cmp 	#"A"
-		bcc 	_STIFail
-		cmp 	#"F"+1
-		bcs 	_STIFail
 		;
 		sec 								; hex adjust
+		lda 	(zTemp3),y 					; get digit.
+		cmp 	#58
+		bcc 	_STIDecimal
+		sec 	
 		sbc 	#7
-_STIOkay:
+_STIDecimal:
 		sec
 		sbc 	#48
 		cmp 	zTemp1  					; if >= base then fail.
@@ -116,15 +103,20 @@ _STINoCarry:
 		;
 		lda 	(zTemp3),y					; get character just done.
 		iny 								; point to next
-		asl 	a 							; shift bit 7 into carry
-		bcc 	_STILoop 					; not reached the end.
+		inc 	SignCount
+		bra 	_STILoop 					; and go round again.
 		;
+
+_STIFail:									; done the conversion.
+		lda 	SignCount 					; if converted 0 charactes, fail.
+		beq 	_STINoConvert 		
+		tya 								; convert count in A.
 		ldx 	zTemp0 						; return result
 		ldy 	zTemp0+1
 		sec
 		rts
 
-_STIFail:		
+_STINoConvert:		
 		clc
 		rts
 

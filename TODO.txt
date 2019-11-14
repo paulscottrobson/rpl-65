@@ -1,6 +1,9 @@
 TODO
 
+-	Tokeniser code for
+		(i) 	comments/strings
+		(ii) 	tokens
+		(iii) 	identifier if nothing else		
 -	Save and Load
-- 	Tokenisation/Editing.
 -	Assembler []
 
