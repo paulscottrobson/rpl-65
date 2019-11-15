@@ -11,11 +11,13 @@
 
 ; ******************************************************************************
 ;
-;						Reset memory for running
+;						Reset memory to YX for running
 ;
 ; ******************************************************************************
 
 ResetMemory:
+		phx									; save run address
+		phy 	
 		;
 		;		Reset allocation pointer
 		;
@@ -39,10 +41,6 @@ _RMFoundEnd:
 		inc 	memVarPtr+1
 _RMNoCarry:
 		;
-		;		Build the definition cache.
-		;
-		; TODO: Write this code.
-		;
 		;		Erase hash table.
 		;
 		ldx 	#HashTableSize*2-1 			; bytes to erase
@@ -53,6 +51,9 @@ _RMEraseHash:
 		;
 		;		Reset code pointer
 		;
-		set16 	codePtr,ProgramStart
+		ply 								; restore and set run address
+		plx
+		sty 	codePtr+1
+		stx 	codePtr
 		ldy 	#3
 		rts

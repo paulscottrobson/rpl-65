@@ -1,6 +1,7 @@
 TODO
 
 -	Keyboard input, tokenise, run.
+-	Special check for 42 LIST
 -	Check cannot create from CLI.	
 -	Save and Load
 -	Assembler []

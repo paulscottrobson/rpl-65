@@ -22,15 +22,29 @@
 Start:
 		ldx 	#$FF 						; reset the stack.
 		txs
-
 		;.include "tokenise/test.asm"		; uncomment this to test the tokeniser code.
+		jsr 	ExternInitialise			; set up external stuff.
 
-		jsr 	ExternInitialise		
-		jmp 	ExecuteProgram
+		ldx 	#BootPrompt & $FF 			; print start up.
+		ldy 	#BootPrompt >> 8
+		jsr 	PrintStringXY
 
+;		jmp 	ExecuteProgram 				; uncomment to run included program straight off.
+		;
+		;		Main Warm Start loop
+		;
 WarmStart:
+		jsr 	ExternInput
+		jsr 	TokeniseInputBuffer
+		;jmp	 	ExecuteProgram
 		.byte 	$FF
+
 		ldx 	#$55
+
+BootPrompt:
+		.text 	"*** RPL/65 (15-NOV-19) ***",13,13
+		.byte 	0
+
 		.include "generated/rpl.inc"
 
 		.include "core/error.asm"

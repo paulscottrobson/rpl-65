@@ -32,6 +32,10 @@ TokeniseInputBuffer:
 		phy
 		stz 	TokenOffset					; reset index into TokenBuffer
 		stz 	TokenBuffer 				; empty that buffer
+		lda 	#0 							; create faux line by writing 3 bytes out.
+		jsr 	TokWriteToken
+		jsr 	TokWriteToken
+		jsr 	TokWriteToken
 		;
 		;		Remove any trailing spaces
 		;

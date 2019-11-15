@@ -16,11 +16,14 @@
 ; ******************************************************************************
 
 ExecuteProgram: ;; [run]
-
-		jsr 	StackReset 					; reset the CPU stack.
+		ldx 	#ProgramStart & $FF
+		ldy 	#ProgramStart >> 8
+ExecuteFromXY:
 		jsr 	ResetMemory 				; reset alloc pointers, variables etc.
+		jsr 	StackReset 					; reset the CPU stack.
 		ldx 	#$FF 						; empty the data stack
 		bra 	ExecuteLoop
+
 		;
 		;		Handle short constant
 		;
