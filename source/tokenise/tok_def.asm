@@ -11,6 +11,7 @@
 
 TOKConvertDefinition:
 		inx 								; skip over :
+TOKConvertIdentifierOnly:		
 		lda 	InputBuffer,x 				; get first and check there's at least one.
 		jsr 	TOKConvertIdentifier
 		bcc 	_TKCDFail
@@ -25,5 +26,5 @@ _TKCDLoop:
 		rts
 
 _TKCDFail:
-		rerror 	"NODEFINE?"		
+		rerror 	"IDENTIFIER?"		
 

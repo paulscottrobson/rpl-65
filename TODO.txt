@@ -1,9 +1,7 @@
 TODO
 
--	Tokeniser code for
-		(i) 	comments/strings
-		(ii) 	tokens
-		(iii) 	identifier if nothing else		
+-	Keyboard input, tokenise, run.
+-	Check cannot create from CLI.	
 -	Save and Load
 -	Assembler []
 

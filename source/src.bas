@@ -2,7 +2,7 @@
 //		Test.
 //
 
-old $6000 ^ballmem "hello" ''
+$6000 ^ballmem 
 32 ^count 
 142 ^A $FFD2 sys
 count for index select ball.init next

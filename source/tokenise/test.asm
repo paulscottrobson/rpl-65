@@ -19,7 +19,8 @@
 TokenCode:	
 
 		.text 	"  42 $5A7 4- 32767 :HEL.LO :TEST.DEFINE"
-		.text 	'"STRING"'
+		.text 	'"STRING" ""'
+		.text 	"IF ++ + DE.MO REPEAT ORCHID"
 		.text 	"'COMMENT"
 
 		.byte 	0			

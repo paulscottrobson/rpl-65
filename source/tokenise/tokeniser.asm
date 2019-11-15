@@ -88,15 +88,19 @@ _TIBNotDefinition:
 		cmp 	#'"'
 		bne 	_TIBNotCommentString
 _TIBIsCommentString:
-		.byte 	$FF
 		jsr 	TOKConvertCommentString
 		bra 	_TIBMainLoop
 		;
 		;		Check for a token here.
 		;
 _TIBNotCommentString:
-		.byte 	$FF		
-
+		jsr 	TOKCheckIsToken 			; check if a token.
+		bcs 	_TIBMainLoop
+		;
+		;		Finally output an identifier (same code as definition)
+		;
+		jsr 	TOKConvertIdentifierOnly
+		bra 	_TIBMainLoop
 _TIBExit: 							
 		ply
 		plx

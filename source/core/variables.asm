@@ -174,6 +174,11 @@ VFCreate:
 		lda 	codePtr+1
 		adc 	#0
 		;
+		cmp 	#ProgramStart >> 8 			; it must be >= program start
+		bcs 	_VFCInProgram 				; otherwise variable created from command line.
+		rerror 	"CREATE?"
+_VFCInProgram:		
+		;
 		ldy 	#3 							; store in new record
 		sta 	(zTemp0),y
 		dey
