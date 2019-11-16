@@ -113,11 +113,12 @@ BootPrompt2:
 		.include "core/variables.asm"
 		
 		.include "tokenise/tokeniser.asm"
+		.include "tokenise/tok_check_call.asm"
 		.include "tokenise/tok_const.asm"
 		.include "tokenise/tok_def.asm"
 		.include "tokenise/tok_cst.asm"
 		.include "tokenise/tok_token.asm"
-		
+
 		.include "words/list.asm"
 		.include "words/memory.asm"
 		.include "words/stack.asm"

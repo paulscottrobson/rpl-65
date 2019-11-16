@@ -18,6 +18,8 @@
 ExternInitialise:
 		lda 	#$02 						; set colour
 		sta 	646
+		lda 	#14							; lower case
+		jsr 	$FFD2		
 		lda 	#147 						; clear screen
 		jsr 	$FFD2
 		lda 	#COL_WHITE 					; white text.
@@ -74,8 +76,7 @@ ExternColour:
 		asl 	a
 		eor 	#$92
 		jsr 	ExternPrint
-		lda 	#14							; lower case
-		jsr 	$FFD2
+
 		pla
 		and 	#7
 		tax 	

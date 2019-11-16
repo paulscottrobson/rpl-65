@@ -267,9 +267,12 @@ _LCDecodeCall:
 		phy
 		ldy 	#3 							; look at first character
 		lda 	(zTemp0),y
+		ply
 		cmp 	#KWD_SYS_DEFINE
 		bne 	_LCNoDefinition 			; not define
 		;
+		phy
+		ldy 	#3
 		jsr 	ListPrintIdentifier
 		ply
 		lda 	#COL_GREEN
@@ -277,7 +280,12 @@ _LCDecodeCall:
 		jmp 	_LCLoop		
 
 _LCNoDefinition:
-		.byte 	$FF 						; definition is missing.
+		lda 	#"#"						; print a #
+		jsr 	PrintCharacter
+		dey 								; unpick Y changes 
+		dey
+		dey
+		jmp 	_LCConstant 				; output # as constant
 ;
 ;		Print identifier at codePtr advance Y past A
 ;

@@ -22,7 +22,7 @@ StackAddress = $0600						; Stack (1/2k bytes)
 InputBuffer = $0800							; Input Buffer (must be on a page boundary)
 IntStack = $09FF 							; Interpreter Stack
 ConvertBuffer = $08E0 						; Conversion buffer (numbers)
-TokenBuffer = $0A00 						; Tokenisation Buffer
+TokenBuffer = $0A00 						; Tokenisation Buffer (must be on a page boundary)
 HashTableSize = 16 							; size of hash table (# entries)
 
 ; ******************************************************************************

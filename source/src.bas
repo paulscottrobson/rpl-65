@@ -3,14 +3,15 @@
 //
 
 ' the ball demo
-$6000 ^ballmem 
+clear
+1024 alloc ^ballmem 
 32 ^count 
 142 ^A $FFD2 sys
 count for index ball.select ball.init next
 
-80 for
+repeat
 	count for index ball.select ball.move next
-next
+0 until
 end
 
 :ball.select << << << << ballmem + ^ball  ;
@@ -31,3 +32,7 @@ end
 	81 ball.draw 
 ;
 
+:clear 0 $9f20 ! $10 $9f22 c!
+128 6ri	0 * for
+	32 $9f23 c! 1 $9f23 c!
+next ;

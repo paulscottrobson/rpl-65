@@ -11,20 +11,53 @@
 
 TOKConvertDefinition:
 		inx 								; skip over :
-TOKConvertIdentifierOnly:		
-		lda 	InputBuffer,x 				; get first and check there's at least one.
-		jsr 	TOKConvertIdentifier
-		bcc 	_TKCDFail
+		lda 	#KWD_SYS_DEFINE 			; output define token
+		jsr 	TOKWriteToken
+TOKConvertIdentifierOnly:
 		;
-_TKCDLoop:
-		jsr 	TOKWriteToken 				; write last one out
-		inx									; skip over it, get next and check
+		stz 	zTemp0 						; count how many identifiers.
+		phx
+_TKCDCount:
 		lda 	InputBuffer,x
 		jsr 	TOKConvertIdentifier
-		bcs 	_TKCDLoop 					; keep going while identifier present.
+		bcc 	_TKCDCounted
+		inx
+		inc 	zTemp0
+		bra 	_TKCDCount
+		;
+_TKCDCounted:
+		lda 	zTemp0 						; get count
+		beq 	_TKCDFail 					; can't be none
+		jsr 	TOKWriteToken 				; write count
+		plx 								; restore X
+		;
+_TKCDLoop:
+		lda 	InputBuffer,x 				; output that many tokens.
+		inx
+		jsr 	TOKConvertIdentifier
+		jsr 	TOKWriteToken 				
+		dec 	zTemp0
+		bne 	_TKCDLoop
 		jsr 	TOKFixUpLast 				; set bit for last character.
 		rts
 
 _TKCDFail:
 		rerror 	"IDENTIFIER?"		
 
+; ******************************************************************************
+;
+;						Copy an identifier
+;
+; ******************************************************************************
+
+TOKCopyIdentifier:
+		lda 	InputBuffer,x 				; get and output token till not found
+		inx
+		jsr 	TOKConvertIdentifier
+		bcc 	_TKCIEnd
+		jsr 	TOKWriteToken 				
+		bra 	TOKCopyIdentifier
+_TKCIEnd:
+		dex
+		jsr 	TOKFixUpLast 				; set bit for last character.
+		rts

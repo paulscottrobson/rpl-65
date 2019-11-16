@@ -1,8 +1,6 @@
 TODO
 
--	Tokenise check identifier for CALL word.
-- 	Call target has been deleted (in List)
 -	Save and Load
-- 	Demo.
+- 	Demo/Publish.
 -	Assembler []
 

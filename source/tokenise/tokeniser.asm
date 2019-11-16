@@ -102,8 +102,13 @@ _TIBNotCommentString:
 		bcs 	_TIBMainLoop
 		;
 		;		Finally output an identifier (same code as definition)
+		;		Then check to see if it is a call, if so, replace it.
 		;
-		jsr 	TOKConvertIdentifierOnly
+		lda 	TokenOffset 				; save token offset.
+		pha 								
+		jsr 	TOKCopyIdentifier 			; copy identifier.
+		pla
+		jsr 	TOKCheckIdentifierIsCall 	; convert if call.
 		bra 	_TIBMainLoop
 _TIBExit: 							
 		ply

@@ -95,7 +95,6 @@ _ELNotFastVariable:
 		ply
 		bra 	ExecuteLoop
 _ELUnknown:
-		.byte 	$FF
 		rerror 	"UNKNOWN?"
 _ELUnderflow:
 		rerror  "STACK?"
