@@ -51,13 +51,19 @@ _TKCDFail:
 ; ******************************************************************************
 
 TOKCopyIdentifier:
+		lda 	InputBuffer,x
+		jsr 	TOKConvertIdentifier
+		bcc 	_TKCIError
+_TKCILoop:
 		lda 	InputBuffer,x 				; get and output token till not found
 		inx
 		jsr 	TOKConvertIdentifier
 		bcc 	_TKCIEnd
 		jsr 	TOKWriteToken 				
-		bra 	TOKCopyIdentifier
+		bra 	_TKCILoop
 _TKCIEnd:
 		dex
 		jsr 	TOKFixUpLast 				; set bit for last character.
 		rts
+_TKCIError:
+		rerror 	"PARSE?"

@@ -280,7 +280,7 @@ _LCDecodeCall:
 		jmp 	_LCLoop		
 
 _LCNoDefinition:
-		lda 	#"#"						; print a #
+		lda 	#"%"						; print a %
 		jsr 	PrintCharacter
 		dey 								; unpick Y changes 
 		dey
