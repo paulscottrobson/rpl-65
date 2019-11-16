@@ -39,8 +39,8 @@ _EHNoCarry:
 		tay
 		jsr 	PrintIntegerUnsigned
 _EHNoLine:
-		bra 	_EHNoLine 						
-		;
+		lda 	#13
+		jsr 	PrintCharacter
 		jmp 	WarmStart
 
 _EHMessage:

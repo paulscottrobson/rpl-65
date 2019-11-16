@@ -16,7 +16,7 @@
 ; ******************************************************************************
 
 ExternInitialise:
-		lda 	#$07 						; set colour
+		lda 	#$02 						; set colour
 		sta 	646
 		lda 	#147 						; clear screen
 		jsr 	$FFD2
