@@ -41,7 +41,9 @@ assert len(opcodes) == 256
 #		Supported addressing modes.
 #
 modes = ",a,#,rl,zp,zx,zy,ix,iy,in,ab,ax,ay,ia,iax".split(",")
-
+#
+#		Analyse the above table.
+#
 mnemonics = { }
 for i in range(0,256):			
 	if opcodes[i] != "":
@@ -51,7 +53,7 @@ for i in range(0,256):
 		assert len(parts[0]) == 3 and parts[1] in modes,"Error {0} {1}".format(parts[0],parts[1])
 		mnemonics[i] = { "opcode":parts[0].upper(),"operand":modes.index(parts[1])}
 #
-#	Output constants.
+#	Output constants. # and implied are made into assembleable identifiers
 #
 print("ASM_FIRST_2BYTE = {0}".format(modes.index("#")))
 print("ASM_FIRST_3BYTE = {0}".format(modes.index("ab")))
@@ -60,4 +62,40 @@ modes[2] = "imm"
 modes[0] = "imp"
 for i in range(0,len(modes)):
 	print("ASM_MODE_{0} = {1}".format(modes[i].upper(),i))
-
+#
+#	Convert each mnemonic to A-Z = 1..26, pack 3 per byte, first char
+#	is 14..10 2nd is 9..5 3rd is 4..0. No operation is $00
+#	
+#	They are stored in two halves so they can be accessed using an
+#	index register.
+#
+lowBytes = []
+highBytes = []
+for i in range(0,256):
+	n = 0
+	if i in mnemonics:
+		s = [(ord(x) & 0x1F) for x in mnemonics[i]["opcode"]]
+		s[-1] |= 0xE0
+		#print(i,s,mnemonics[i])
+		n = (s[0] << 10)+(s[1] << 5)+s[2]
+	lowBytes.append(n & 0xFF)
+	highBytes.append(n >> 8)
+assert len(lowBytes) == 256 and len(highBytes) == 256
+print("LowBytes:")
+print("\t.byte {0}".format(",".join(["${0:02x}".format(n) for n in lowBytes])))
+print("HighBytes:")
+print("\t.byte {0}".format(",".join(["${0:02x}".format(n) for n in highBytes])))
+#
+#	Modes for each opcode is packed into 2 x 4 bit nibbles, with the first
+#	opcode (even) in bit 7..4, the second in bits 0..3
+#
+modes = [ 0xF ] * 256
+for i in range(0,256):
+	if i in mnemonics:
+		modes[i] = mnemonics[i]["operand"]
+compactModes = []		
+for i in range(0,255,2):				
+	compactModes.append((modes[i] << 4) + modes[i+1])
+assert len(compactModes) == 128
+print("ModeNibbles:")
+print("\t.byte {0}".format(",".join(["${0:02x}".format(n) for n in compactModes])))

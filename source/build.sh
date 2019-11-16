@@ -1,5 +1,6 @@
 rm dump*.bin 2>/dev/null	
 python scripts/generate.py >generated/rpl.inc
+python scripts/assembler.py >generated/assembler.inc
 python scripts/makeprogram.py
 64tass -q -c main.asm -o rpl.prg -L rpl.lst
 if [ $? -eq 0 ]; then

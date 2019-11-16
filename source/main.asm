@@ -100,7 +100,8 @@ BootPrompt2:
 		.text 	" BYTES AVAILABLE.",13,13,0
 
 		.include "generated/rpl.inc"
-
+		.include "generated/assembler.inc"
+		
 		.include "core/error.asm"
 		.include "core/execute.asm"
 		.include "core/extern.asm"

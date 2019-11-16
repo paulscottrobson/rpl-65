@@ -65,7 +65,7 @@ class Tokens(object):
 		t = t.replace("!","PLING").replace("?","QMARK").replace("[","LSQPAREN").replace("]","RSQPAREN")
 		t = t.replace("$","DOLLAR").replace(",","COMMA").replace(":","COLON").replace("%","SYS_")
 		t = t.replace("(","LPAREN").replace(")","RPAREN").replace("&","AMPERSAND").replace("^","HAT")
-		t = t.replace(".","DOT").replace("@","AT").replace(";","SEMICOLON")
+		t = t.replace(".","DOT").replace("@","AT").replace(";","SEMICOLON").replace("#","HASH")
 		#t = t.replace("","").replace("","").replace("","").replace("","").replace("","")
 		assert re.match("^[A-Z\\_]+$",t) is not None,"Bad token "+t
 		return t
@@ -76,7 +76,7 @@ class Tokens(object):
 		return """
 			* /	mod	+ -	and	or xor shl shr
 			= <> > < >= <=
-			c@ c! @ ! d! alloc ^ [ ] sys ?
+			c@ c! @ ! d! alloc ^ [ ] sys ? #
 			abs negate not ++ -- bswap << >> sgn rnd
 			clr drop dup nip over swap
 			else index ; assert
