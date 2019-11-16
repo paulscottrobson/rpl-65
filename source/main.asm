@@ -121,6 +121,7 @@ BootPrompt2:
 
 		.include "words/list.asm"
 		.include "words/memory.asm"
+		.include "words/saveload.asm"
 		.include "words/stack.asm"
 		.include "words/store.asm"
 		.include "words/system.asm"

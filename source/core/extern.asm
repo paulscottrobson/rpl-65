@@ -204,9 +204,9 @@ _ESLoad:
 ; ******************************************************************************
 
 EXGetLength:
-		ldy 	#255
-_EXGL:	iny
-		lda 	(zTemp0),y
-		bne 	_EXGL
-		tya
+		lda 	(zTemp0) 					; get name length
+		inc 	zTemp0 						; bump ptr past it
+		bne 	_EXGLExit
+		inc 	zTemp0+1
+_EXGLExit:
 		rts

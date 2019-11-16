@@ -33,6 +33,6 @@ end
 ;
 
 :clear 0 $9f20 ! $10 $9f22 c!
-128 6ri	0 * for
+128 60 * for
 	32 $9f23 c! 1 $9f23 c!
 next ;

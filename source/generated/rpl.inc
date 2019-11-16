@@ -208,6 +208,6 @@ DispatchHandler:
 	.word Command_Stop             ; $003e stop
 	.word ExecuteProgram           ; $003f run
 	.word Command_End              ; $0040 end
-	.word SyntaxError              ; $0041 save
-	.word SyntaxError              ; $0042 load
+	.word System_Save              ; $0041 save
+	.word System_Load              ; $0042 load
 
