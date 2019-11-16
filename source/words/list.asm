@@ -21,8 +21,7 @@ Cmd_List: 	;; [list]
 		sta 	zTemp2+1
 		dex
 _CLNoStart:
-		lda 	#COL_GREEN
-		jsr 	ExternColour
+		;
 _CLNoStartLine:
 		set16 	codePtr,programStart
 		;
@@ -58,6 +57,8 @@ _CLIEnd:
 ;		List current line.
 ;
 ListCurrent:
+		lda 	#COL_GREEN
+		jsr 	ExternColour
 		ldy 	#1							; print line#
 		lda 	(codePtr),y
 		tax
@@ -221,6 +222,8 @@ _LCControl:
 		cmp 	#KWD_SYS_QSTRING
 		beq 	_LCDecodeString
 		ldy 	#"'"						; setup for comment
+		lda 	#COL_WHITE 					; highlight comment.
+		jsr 	ExternColour
 _LCDecodeString
 		tya 					
 		jsr 	PrintCharacter
@@ -237,14 +240,20 @@ _LCEDNoQuote:
 		;		Decode a definition
 		;
 _LCDecodeDefine:
+		lda 	#COL_YELLOW 				; highlight definition.
+		jsr 	ExternColour
 		lda 	#":"
 		jsr 	PrintCharacter
 		jsr 	ListPrintCodeIdentifier
+		lda 	#COL_GREEN
+		jsr 	ExternColour
 		jmp 	_LCLoop
 		;
 		;		Decode a CALL.
 		;
 _LCDecodeCall:
+		lda 	#COL_CYAN
+		jsr 	ExternColour
 		iny 								; get line number into XA
 		lda 	(codePtr),y
 		pha
@@ -263,6 +272,8 @@ _LCDecodeCall:
 		;
 		jsr 	ListPrintIdentifier
 		ply
+		lda 	#COL_GREEN
+		jsr 	ExternColour
 		jmp 	_LCLoop		
 
 _LCNoDefinition:

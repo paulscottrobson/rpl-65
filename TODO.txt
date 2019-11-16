@@ -1,7 +1,8 @@
 TODO
 
--	Program Editing.
 -	Tokenise check identifier for CALL word.
+- 	Call target has been deleted (in List)
 -	Save and Load
+- 	Demo.
 -	Assembler []
 

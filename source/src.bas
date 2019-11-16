@@ -2,20 +2,21 @@
 //		Test.
 //
 
+' the ball demo
 $6000 ^ballmem 
 32 ^count 
 142 ^A $FFD2 sys
-count for index select ball.init next
+count for index ball.select ball.init next
 
 80 for
-	count for index select ball.move next
+	count for index ball.select ball.move next
 next
 end
 
-:select << << << << ballmem + ^ball  ;
+:ball.select << << << << ballmem + ^ball  ;
 :ball.init rnd abs 80 mod ^ball[0] rnd abs 60 mod ^ball[1] 
-			rsgn ^ball[2] rsgn ^ball[3] rnd 7 and ++ ^ball[4] 81 ball.draw ;
-:rsgn rnd 1 and if 1 else 1- endif ;
+			random.sign ^ball[2] random.sign ^ball[3] rnd 7 and ++ ^ball[4] 81 ball.draw ;
+:random.sign rnd 1 and if 1 else 1- endif ;
 
 :ball.draw 
 	ball[0] << $9f20 c!

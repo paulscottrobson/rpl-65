@@ -48,6 +48,8 @@ zTemp0:			.word ?						; temporary words
 zTemp1: 		.word ?
 zTemp2: 		.word ?
 zTemp3: 		.word ?
+zTemp4:			.word ?
+zTemp5:			.word ?
 iStack:			.word ?						; stack pointer
 signCount:		.byte ? 					; divide sign count.
 allocPtr:		.word ? 					; memory allocation pointer (down)

@@ -91,9 +91,8 @@ _HaveLineNumber:
 		cmp 	#KWD_LIST 					; this to be executed and not
 		beq 	ExecuteLine 				; to be code. 
 		pla
-		;
-		.byte 	$FF
-
+		jmp 	EditProgram
+		
 BootPrompt:
 		.text 	"*** RPL/65 (16-NOV-19) ***",13,13
 		.byte 	0
@@ -106,6 +105,7 @@ BootPrompt2:
 		.include "core/execute.asm"
 		.include "core/extern.asm"
 		.include "core/index.asm"
+		.include "core/program.asm"
 		.include "core/reset.asm"
 		.include "core/stack.asm"
 		.include "core/tointeger.asm"
