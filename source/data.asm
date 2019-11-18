@@ -58,6 +58,7 @@ randomSeed:		.word ? 					; random number seed
 prefixCharacter:.byte ?						; char to print before listed element.
 breakCount:		.byte ? 					; counter avoids repeated break checks
 tokenOffset:	.byte ? 					; position in output token buffer.
+assemblerMode:	.byte ? 					; in assembler mode ?
 
 		.send zeroPage
 

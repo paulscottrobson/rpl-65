@@ -1,5 +1,4 @@
 TODO
 
-- 	Demo/Publish.
--	Assembler []
+-	Implement Assembler.
 

@@ -180,8 +180,8 @@ DispatchHandler:
 	.word Mem_DWPoke               ; $0020 d!
 	.word Mem_Alloc                ; $0021 alloc
 	.word Command_Store            ; $0022 ^
-	.word SyntaxError              ; $0023 [
-	.word SyntaxError              ; $0024 ]
+	.word CommandAssemblerOn       ; $0023 [
+	.word CommandAssemblerOff      ; $0024 ]
 	.word Command_Sys              ; $0025 sys
 	.word Command_DumpStack        ; $0026 ?
 	.word SyntaxError              ; $0027 #

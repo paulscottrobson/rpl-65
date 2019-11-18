@@ -21,6 +21,7 @@ ExecuteProgram: ;; [run]
 ExecuteFromXY:
 		jsr 	ResetMemory 				; reset alloc pointers, variables etc.
 		jsr 	StackReset 					; reset the CPU stack.
+		stz 	assemblerMode 				; not in assembler mode.
 		ldx 	#$FF 						; empty the data stack
 		bra 	ExecuteLoop
 
@@ -83,7 +84,7 @@ _ELNotToken:
 _ELNotFastVariable:		
 		clc									; do not autocreate if not found.
 		jsr 	VariableFind				; find the variable.
-		bcc 	_ELUnknown
+		bcc 	ELUnknown
 		jsr 	IndexCheck
 		phy 								; copy to stack
 		inx
@@ -92,10 +93,8 @@ _ELNotFastVariable:
 		ldy 	#1
 		lda 	(zTemp0),y
 		sta 	highStack,x
-		ply
+		ply		
 		bra 	ExecuteLoop
-_ELUnknown:
-		rerror 	"UNKNOWN?"
 _ELUnderflow:
 		rerror  "STACK?"
 
@@ -120,6 +119,39 @@ _ENLNoCarry:
 		lda 	(codePtr) 					; check offset non zero
 		bne 	ExecuteLoop
 		jmp	 	Command_End 				; if zero end program.
+
+; ******************************************************************************
+;
+;						Unknown Variable, check assembler
+;
+; ******************************************************************************
+
+ELUnknown:
+		lda 	assemblerMode 				; error if not in assembler mode.
+		bne 	_ELCheckAssembler
+_ELUnknown:
+		rerror 	"UNKNOWN?"
+_ELCheckAssembler:
+		.byte 	$FF
+		; TODO: Try Assembler
+		bra 	_ELUnknown
+
+; ******************************************************************************
+;
+;						Switch In/Out assembler mode
+;
+; ******************************************************************************
+
+CommandAssemblerOn: ;; [[]
+		StartCommand
+		lda 	#1
+		sta 	assemblerMode		
+		NextCommand
+
+CommandAssemblerOff: ;; []]
+		StartCommand
+		stz 	assemblerMode
+		NextCommand
 
 ; ******************************************************************************
 ;

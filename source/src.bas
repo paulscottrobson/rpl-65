@@ -3,7 +3,7 @@
 //
 
 ' the ball demo
-clear
+[ clc ] clear 
 1024 alloc ^ballmem 
 32 ^count 
 142 ^A $FFD2 sys

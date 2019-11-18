@@ -94,7 +94,7 @@ _HaveLineNumber:
 		jmp 	EditProgram
 		
 BootPrompt:
-		.text 	"*** RPL/65 (16-NOV-19) ***",13,13
+		.text 	"*** RPL/65 (19-NOV-19) ***",13,13
 		.byte 	0
 BootPrompt2:
 		.text 	" BYTES AVAILABLE.",13,13,0
