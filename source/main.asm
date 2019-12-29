@@ -45,8 +45,8 @@ Start:
 WarmStart:
 		ldx 	#$FF 						; reset the stack.
 		txs
+		.byte 	$FF	
 		jsr 	ExternInput					; input a line.
-		lda 	InputBuffer 				; get the first character.
 		pha
 		jsr 	TokeniseInputBuffer 		; tokenise it
 		pla 

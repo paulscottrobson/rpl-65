@@ -15,9 +15,9 @@
 ;
 ; ******************************************************************************
 
-BuildAddress = $A000 						; Build address
+BuildAddress = $8000 						; Build address
 MemoryStart = $0F00 						; Main memory space here
-HighMemory = $9F00							; Where memory ends
+HighMemory = $7F00							; Where memory ends
 StackAddress = $0600						; Stack (1/2k bytes)
 InputBuffer = $0800							; Input Buffer (must be on a page boundary)
 IntStack = $09FF 							; Interpreter Stack
