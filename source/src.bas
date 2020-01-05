@@ -3,9 +3,9 @@
 //
 
 ' the ball demo
-[ clc ] clear 
+clear 
 1024 alloc ^ballmem 
-32 ^count 
+16 ^count 
 142 ^A $FFD2 sys
 count for index ball.select ball.init next
 

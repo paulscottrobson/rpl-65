@@ -145,7 +145,7 @@ ExternSave:
 		jsr 	$FFBD 						; set name
 		;
 		lda 	#1
-		ldx 	#1	 						; device #1
+		ldx 	#8	 						; device #8
 		ldy 	#0
 		jsr 	$FFBA 						; set LFS
 		;
@@ -182,7 +182,7 @@ ExternLoad:
 		jsr 	$FFBD 						; set name
 		;
 		lda 	#1
-		ldx 	#1	 						; device #1
+		ldx 	#8	 						; device #8
 		ldy 	#0
 		jsr 	$FFBA 						; set LFS		
 
